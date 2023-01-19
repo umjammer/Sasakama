@@ -54,10 +54,6 @@ public class Test1 {
                 fn_voice,
                 "-ow",
                 "tmp/test.wav",
-                "-ol",
-                "tmp/test.lab",
-                "-of",
-                "tmp/test.full.lab",
                 "-g",
                 "-40",
                 "src/test/resources/test.txt"

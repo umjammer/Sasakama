@@ -32,48 +32,18 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package org.Sasakama;
+package org.icn.sasakama;
 
-public class Sasakama_Node {
-	int index;
-	int pdf;
-	Sasakama_Node yes;
-	Sasakama_Node no;
-	Sasakama_Node next;
-	Sasakama_Question quest;
-	
-	Sasakama_Node(){
-		initialize();
-	}
-	
-	public void initialize(){
-		index = 0;
-		pdf   = 0;
-		yes   = null;
-		no    = null;
-		next  = null;
-		quest = null;
-	}
-	
-	public void clear(){
-		if(yes != null)
-			yes.clear();
-		if(no != null)
-			no.clear();
+public class LabelString {
+    LabelString next;
+    String name;
+    double start;
+    double end;
 
-		initialize();
-	}
-	
-	public Sasakama_Node find(int num){
-		Sasakama_Node node = this;
-		for(;node != null;node=node.next){
-			if(node.index == num)
-				break;
-		}
-		
-		return node;
-	}
-	
-	
-	
+    public LabelString() {
+        next = null;
+        name = null;
+        start = 0.0;
+        end = 0.0;
+    }
 }

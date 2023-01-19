@@ -32,73 +32,47 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package org.Sasakama;
+package org.icn.sasakama;
 
-public class Sasakama_SMatrices {
-	double[][] mean;
-	double[][] ivar;
-	double[] g;
-	double[][] wuw;
-	double[] wum;
+public class Node {
+    int index;
+    int pdf;
+    Node yes;
+    Node no;
+    Node next;
+    Question quest;
+
+    Node() {
+        initialize();
+    }
+
+    public void initialize() {
+        index = 0;
+        pdf = 0;
+        yes = null;
+        no = null;
+        next = null;
+        quest = null;
+    }
+
+    public void clear() {
+        if (yes != null)
+            yes.clear();
+        if (no != null)
+            no.clear();
+
+        initialize();
+    }
+
+    public Node find(int num) {
+        Node node = this;
+        for (; node != null; node = node.next) {
+            if (node.index == num)
+                break;
+        }
+
+        return node;
+    }
 
 
-	Sasakama_SMatrices(){
-	}
-	
-	public void create(int length, int vector_length, int win_size, int width){
-		mean = new double[length][vector_length * win_size];
-		ivar = new double[length][vector_length * win_size];
-		wum  = new double[length];
-		wuw  = new double[length][width];
-		g    = new double[length];
-	}
-	
-	public void print(){
-		System.err.printf("*** SMatrices begin ***\n");
-		print_mean();
-		print_ivar();
-		print_g();
-		print_wuw();
-		print_wum();
-		System.err.printf("*** SMatrices end ***\n");
-	}
-	
-	public void print_mean(){
-		for(int i=0;i < mean.length;i++){
-			for(int j=0;j < mean[i].length;j++){
-				System.err.printf("mean[%d][%d]:%5.2f\n", i, j, mean[i][j]);
-			}
-		}
-	}
-	
-	public void print_ivar(){
-		for(int i=0;i < ivar.length;i++){
-			for(int j=0;j < ivar[i].length;j++){
-				System.err.printf("ivar[%d][%d]:%5.2f\n", i, j, ivar[i][j]);
-			}
-		}
-	}
-	
-	public void  print_g(){
-		for(int i=0;i < g.length;i++){
-			System.err.printf("g[%d]:%5.2f\n", i, g[i]);
-		}
-	}
-	
-	public void print_wuw(){
-		for(int i=0;i < wuw.length;i++){
-			for(int j=0;j < wuw[i].length;j++){
-				System.err.printf("wuw[%d][%d]:%5.2f\n", i, j, wuw[i][j]);
-			}
-		}
-	}
-	
-	public void  print_wum(){
-		for(int i=0;i < wum.length;i++){
-			System.err.printf("wum[%d]:%5.2f\n", i, wum[i]);
-		}
-	}
-	
-	
-	
 }

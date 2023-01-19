@@ -32,34 +32,15 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package org.Sasakama;
+package org.icn.sasakama;
 
-public class Sasakama_Gv {
-	int length;
-	double[] mean;
-	double[] vari;
-	Boolean[] gv_switch;
-	
-	Sasakama_Gv(){
-		length = 0;
-		mean = null;
-		vari = null;
-		gv_switch = null;
-	}
-	
-	Sasakama_Gv(Sasakama_Gv gv){
-		length = gv.length;
-		mean = new double[gv.mean.length];
-		vari = new double[gv.vari.length];
-		gv_switch = new Boolean[gv.gv_switch.length];
-		
-		for(int i=0;i < mean.length;i++)
-			mean[i] = gv.mean[i];
-		
-		for(int i=0;i < vari.length;i++)
-			vari[i] = gv.vari[i];
-		
-		for(int i=0;i < gv_switch.length;i++)
-			gv_switch[i] = gv.gv_switch[i];
-	}
+public class GStream {
+    int vector_length;
+    double[][] par;
+
+    GStream(int total_frame, int vector_length) {
+        this.vector_length = vector_length;
+        par = new double[total_frame][vector_length];
+    }
+
 }

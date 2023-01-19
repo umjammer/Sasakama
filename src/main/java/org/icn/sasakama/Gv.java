@@ -32,96 +32,34 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package org.Sasakama;
+package org.icn.sasakama;
 
-public class Sasakama_Question {
-	String string;
-	Sasakama_Pattern head;
-	Sasakama_Question next;
+public class Gv {
+    int length;
+    double[] mean;
+    double[] vari;
+    Boolean[] gv_switch;
 
-	public Sasakama_Question(){
-		initialize();
-	}
-	
-	public void initialize(){
-		string = null;
-		head   = null;
-		next   = null;
-	}
-	
-	public void clear(){
-		if(string != null)
-			string = null;
-	
-		head = null;
-		initialize();
-	}
-	
-	public Boolean load(Sasakama_File hf){
-		if(hf.feof() == true)
-			return false;
-		clear();
+    Gv() {
+        length = 0;
+        mean = null;
+        vari = null;
+        gv_switch = null;
+    }
 
-		StringBuffer sb= new StringBuffer();
-		if(hf.get_pattern_token(sb) == false)
-			return false;
-		this.string = sb.toString();
-		//System.err.printf("string1:%s\n", this.string);
-		
-		sb = new StringBuffer();
-		if(hf.get_pattern_token(sb) == false){
-			clear();
-			return false;
-		}
-		//System.err.printf("string2:%s\n", sb.toString());
-			
-		Sasakama_Pattern last_pattern = null;
-		if(sb.charAt(0) == '{'){
-			while(true){
-				sb = new StringBuffer();
-				if(hf.get_pattern_token(sb) == false){
-					clear();
-					return false;
-				}
-				//System.err.printf("string3:%s\n", sb.toString());
-				
-				Sasakama_Pattern pattern = new Sasakama_Pattern();
-				if(head != null)
-					last_pattern.next = pattern;
-				else
-					head = pattern;
-				pattern.string = sb.toString();
-				pattern.next = null;
-				sb = new StringBuffer();
-				if(hf.get_pattern_token(sb) == false){
-					clear();
-					return false;
-				}
-				//System.err.printf("string4:%s\n", sb.toString());
-				if(sb.charAt(0) == '}')
-					break;
+    Gv(Gv gv) {
+        length = gv.length;
+        mean = new double[gv.mean.length];
+        vari = new double[gv.vari.length];
+        gv_switch = new Boolean[gv.gv_switch.length];
 
-				last_pattern = pattern;
-			}
-		}
-		return true;
-	}
-	
-	public Boolean match(final String string){
-		for(Sasakama_Pattern pattern = head;pattern != null;pattern=pattern.next)
-			if(Sasakama_Misc.pattern_match(string, pattern.string))
-				return true;
+        for (int i = 0; i < mean.length; i++)
+            mean[i] = gv.mean[i];
 
-		return false;
-	}
-	
-	public Sasakama_Question find(final String string){
-		for(Sasakama_Question question = this;question != null;question=question.next)
-			if(string.equals(question.string) == true)
-				return question;
-		return null;
-	}
-	
-	
-}	
+        for (int i = 0; i < vari.length; i++)
+            vari[i] = gv.vari[i];
 
+        for (int i = 0; i < gv_switch.length; i++)
+            gv_switch[i] = gv.gv_switch[i];
+    }
+}

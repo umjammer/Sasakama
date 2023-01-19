@@ -37,12 +37,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.Sasakama.*;
+import org.icn.sasakama.Engine;
+import org.icn.sasakama.Misc;
+
 
 public class Sasakama {
 	final static String progname = "Sasakama";
 	final static String version  = "version: 20151228";
-	
+
 	public static void usage()	{
 	   System.err.printf("%s - The HMM-based speech synthesis engine %s \n", progname, version);
 	   System.err.printf("\n");
@@ -83,30 +85,30 @@ public class Sasakama {
 	public static void main(final String[] args){
 		int num_voices = 0;
 		ArrayList<String> arrayStr = new ArrayList<String>();
-		
+
 		if(args.length == 0){
 			usage();
 		}
-		
+
 		for(int i=0;i < args.length;i++)
 			if(args[i].equals("-m"))
 				arrayStr.add(args[++i]);
-		
+
 		num_voices = arrayStr.size();
 		if(num_voices == 0){
-			Sasakama_Misc.error("Error: HTS voices cannot be loaded.\n");
+			Misc.error("Error: HTS voices cannot be loaded.\n");
 			System.exit(1);
 		}
-		
+
 		String[] voices = new String[num_voices];
 		for(int i=0;i < num_voices;i++)
 			voices[i] = arrayStr.get(i);
-		
-		Sasakama_Engine engine = new Sasakama_Engine();
+
+		Engine engine = new Engine();
 		if(engine.load(voices) != true){
-			Sasakama_Misc.error("Error: HTS voices cannot be loaded.");
+			Misc.error("Error: HTS voices cannot be loaded.");
 		}
-		
+
 		String labfn = null;
 		int num_interpolation_weights = 0;
 		FileOutputStream wavfp = null;
@@ -117,7 +119,7 @@ public class Sasakama {
 		FileOutputStream lpffp = null;
 		FileOutputStream tracefp = null;
 		Boolean use_audio = false;
-		
+
 		int cnt = 0;
 		try {
 			while(cnt < args.length){
@@ -175,7 +177,7 @@ public class Sasakama {
 				else if(args[cnt].equals("-i")){
 					num_interpolation_weights = Integer.valueOf(args[++cnt]).intValue();
 					if(num_interpolation_weights != num_voices){
-						Sasakama_Misc.error("num_interpolation_weights != num_voices");
+						Misc.error("num_interpolation_weights != num_voices");
 						System.exit(1);
 					}
 					for(int j=0;j < num_interpolation_weights;j++){
@@ -203,7 +205,7 @@ public class Sasakama {
 						use_audio = true;
 				}
 				else if(args[cnt].startsWith("-")){
-					Sasakama_Misc.error("Error: Invalid option: "+args[cnt]);
+					Misc.error("Error: Invalid option: "+args[cnt]);
 					System.exit(1);
 				}
 				else{
@@ -216,43 +218,43 @@ public class Sasakama {
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		// synthesize;
 		try {
 			if(engine.synthesize_from_fn(labfn) != true){
-				Sasakama_Misc.error(" waveform cannot be synthesized.");
+				Misc.error(" waveform cannot be synthesized.");
 				System.exit(1);
 			}
 			if(tracefp != null){
 				engine.save_information(tracefp);
 				tracefp.close();
 			}
-			
+
 			if(durfp != null){
 				engine.save_label(durfp);
 				durfp.close();
 			}
-			
+
 			if(rawfp != null){
 				engine.save_generated_speech(rawfp);
 				rawfp.close();
 			}
-			
+
 			if(wavfp != null){
 				engine.save_riff(wavfp);
 				wavfp.close();
 			}
-			
+
 			if(mgcfp != null){
 				engine.save_generated_parameter(0, mgcfp);
 				mgcfp.close();
 			}
-			
+
 			if(lf0fp != null){
 				engine.save_generated_parameter(1, lf0fp);
 				lf0fp.close();
 			}
-			
+
 			if(lpffp != null){
 				engine.save_generated_parameter(2,  lpffp);
 				lpffp.close();

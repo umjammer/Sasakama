@@ -32,15 +32,24 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package org.Sasakama;
+package org.icn.sasakama;
 
-public class Sasakama_GStream {
-	int vector_length;
-	double[][] par;
+public class SStream {
+    int vector_length;
+    double[][] mean;
+    double[][] vari;
+    double[] msd;
+    Window win;
+    Gv gv;
+	/*
+	int win_size;
+	int[] win_l_width;
+	int[] win_r_width;
+	double[][] win_coefficient;
+	int win_max_width;
 
-	Sasakama_GStream(int total_frame, int vector_length){
-		this.vector_length = vector_length;
-		par = new double[total_frame][vector_length];
-	}
-	
+	double[] gv_mean;
+	double[] gv_vari;
+	Boolean[] gv_switch;
+	*/
 }

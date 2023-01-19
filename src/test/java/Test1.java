@@ -4,8 +4,18 @@
  * Programmed by Naohide Sano
  */
 
+import java.io.BufferedInputStream;
+import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.CountDownLatch;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineEvent;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -23,7 +33,7 @@ import vavi.util.properties.annotation.PropsEntity;
  */
 @EnabledIf("localPropertiesExists")
 @PropsEntity(url = "file:local.properties")
-class Test1 {
+public class Test1 {
 
     static boolean localPropertiesExists() {
         return Files.exists(Paths.get("local.properties"));
@@ -39,7 +49,6 @@ class Test1 {
         }
     }
 
-    @Disabled
     @Test
     void test1() throws Exception {
         Sasakama.main(new String[] {
@@ -51,7 +60,24 @@ class Test1 {
                 "tmp/test.lab",
                 "-of",
                 "tmp/test.full.lab",
+                "-g",
+                "-40",
                 "src/test/resources/test.txt"
         });
+        speak(Files.newInputStream(Paths.get("tmp/test.wav")));
+    }
+
+    /** */
+    void speak(InputStream is) throws Exception {
+        AudioInputStream ais = AudioSystem.getAudioInputStream(new BufferedInputStream(is));
+        DataLine.Info line = new DataLine.Info(Clip.class, ais.getFormat());
+        Clip clip = (Clip) AudioSystem.getLine(line);
+        CountDownLatch cdl = new CountDownLatch(1);
+        clip.addLineListener(e -> { if (e.getType() == LineEvent.Type.STOP) cdl.countDown(); });
+        clip.open(ais);
+        clip.start();
+        cdl.await();
+        clip.stop();
+        clip.close();
     }
 }

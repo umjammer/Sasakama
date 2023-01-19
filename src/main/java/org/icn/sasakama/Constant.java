@@ -32,28 +32,22 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package org.Sasakama;
+package org.icn.sasakama;
 
-public class Sasakama_Condition {
-	int sampling_frequency;
-	int fperiod;
-	int audio_buff_size;
-	Boolean stop;
-	double volume;
-	double[] msd_threshold;
-	double[] gv_weight;
-	
-	Boolean phoneme_alignment_flag;
-	double speed;
-	
-	int stage;
-	Boolean use_log_gain;
-	double alpha;
-	double beta;
-	
-	double additional_half_tone;
-	
-	double[] duration_iw;
-	double[][] parameter_iw;
-	double[][] gv_iw;
+public class Constant {
+    //static final int MAXBUFLEN = 1024;
+    static final Boolean WORDS_LITTLEENDIAN = false;
+    static final Boolean WORDS_BIGENDIAN = false;
+    static final double TIME_CONSTANT = 1.0e+07;
+    static final double MAX_F0 = 20000.0;
+    static final double MIN_F0 = 20.0;
+    static final double MAX_LF0 = 9.9034875525361280454891979401956;     /* log(20000.0) */
+    static final double MIN_LF0 = 2.9957322735539909934352235761425;     /* log(20.0) */
+    static final double HALF_TONE = 0.05776226504666210911810267678818;    /* log(2.0) / 12.0 */
+    static final double DB = 0.11512925464970228420089957273422;    /* log(10.0) / 20.0 */
+    static final double LZERO = -1e+10;
+    static final double INFTY = 1.0e+38;
+    static final double INFTY2 = 1.0e+19;
+    static final double INVINF = 1.0e-38;
+    static final double INVINF2 = 1.0e-19;
 }

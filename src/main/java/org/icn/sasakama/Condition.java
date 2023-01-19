@@ -32,20 +32,28 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package org.Sasakama;
+package org.icn.sasakama;
 
-public class Sasakama_Pattern {
-	String string;
-	Sasakama_Pattern next;
-	
-	public Sasakama_Pattern(){
-		initialize();
-	}
-	
-	public void initialize(){
-		string  = null;
-		next = null;
-	}
-	
-	
+public class Condition {
+    int sampling_frequency;
+    int fperiod;
+    int audio_buff_size;
+    Boolean stop;
+    double volume;
+    double[] msd_threshold;
+    double[] gv_weight;
+
+    Boolean phoneme_alignment_flag;
+    double speed;
+
+    int stage;
+    Boolean use_log_gain;
+    double alpha;
+    double beta;
+
+    double additional_half_tone;
+
+    double[] duration_iw;
+    double[][] parameter_iw;
+    double[][] gv_iw;
 }

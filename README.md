@@ -1,3 +1,14 @@
+[![Release](https://jitpack.io/v/umjammer/Sasakama.svg)](https://jitpack.io/#umjammer/Sasakama)
+[![Java CI](https://github.com/umjammer/Sasakama/actions/workflows/maven.yml/badge.svg)](https://github.com/umjammer/Sasakama/actions/workflows/maven.yml)
+[![CodeQL](https://github.com/umjammer/Sasakama/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/umjammer/Sasakama/actions/workflows/codeql-analysis.yml)
+![Java](https://img.shields.io/badge/Java-8-b07219)
+[![Parent](https://img.shields.io/badge/Parent-vavi--speech-pink)](https://github.com/umjammer/vavi-speech)
+
+mavenized Sasakama
+
+---
+[Original](https://github.com/icn-lab/Sasakama)
+
 # Sasakama
 Copyright (c) 2015 Intelligent Communication Network (Ito-Nose) Laboratory
 		   Tohoku University.  

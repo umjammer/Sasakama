@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class File {
@@ -56,7 +57,7 @@ public class File {
         position = 0;
     }
 
-    public Boolean open(String filename, String opt) {
+    public boolean open(String filename, String opt) {
         this.filename = filename;
 
         try {
@@ -79,12 +80,12 @@ public class File {
         return true;
     }
 
-    public Boolean open(String filename, String opt, ByteOrder byte_order) {
+    public boolean open(String filename, String opt, ByteOrder byte_order) {
         this.byte_order = byte_order;
         return open(filename, opt);
     }
 
-    public Boolean open(String string) {
+    public boolean open(String string) {
         buffer = string.getBytes();
         return true;
     }
@@ -104,15 +105,12 @@ public class File {
         this.buffer = null;
     }
 
-    public Boolean feof() {
-        if (buffer.length <= position)
-            return true;
-        else
-            return false;
+    public boolean feof() {
+        return buffer.length <= position;
     }
 
     public int fgetc() {
-        if (feof() == true)
+        if (feof())
             return EOF;
 
         byte[] temp = new byte[1];
@@ -130,7 +128,7 @@ public class File {
         return position;
     }
 
-    public Boolean fseek(int offset, int origin) {
+    public boolean fseek(int offset, int origin) {
         int new_pos = 0;
 
         switch (origin) {
@@ -155,10 +153,10 @@ public class File {
 
     public int fread(byte[] buf) {
         int copylen = buf.length;
-        //	System.err.printf("pos:%d,  copylen:%d, buflen:%d\n", position, copylen, buffer.length);
+//        System.err.printf("pos:%d,  copylen:%d, buflen:%d\n", position, copylen, buffer.length);
         if (position + copylen > buffer.length) {
             Misc.error("Error: File.fread: position + copylen > buffer.length");
-            //System.err.printf("pos:%d,  copylen:%d, buflen:%d\n", position, copylen, buffer.length);
+//            System.err.printf("pos:%d,  copylen:%d, buflen:%d\n", position, copylen, buffer.length);
             System.exit(1);
         }
 
@@ -245,7 +243,7 @@ public class File {
     }
 
     public String readLine() {
-        ArrayList<Byte> temp = new ArrayList<Byte>();
+        ArrayList<Byte> temp = new ArrayList<>();
 
         while (true) {
             byte b = (byte) fgetc();
@@ -256,37 +254,37 @@ public class File {
 
         byte[] bbuf = new byte[temp.size()];
         for (int i = 0; i < temp.size(); i++)
-            bbuf[i] = temp.get(i).byteValue();
+            bbuf[i] = temp.get(i);
         String retString = new String(bbuf);
 
         return retString;
     }
 
-    public Boolean get_pattern_token(StringBuffer sb) {
+    public boolean get_pattern_token(StringBuffer sb) {
         sb.delete(0, sb.length());
-        ArrayList<Byte> buff = new ArrayList<Byte>();
-        Boolean squote = false, dquote = false;
+        ArrayList<Byte> buff = new ArrayList<>();
+        boolean squote = false, dquote = false;
 
-        if (feof() == true)
+        if (feof())
             return false;
 
         byte c = (byte) fgetc();
 
         while (c == ' ' || c == '\n') {
-            if (feof() == true)
+            if (feof())
                 return false;
             c = (byte) fgetc();
         }
 
         if (c == '\'') {
-            if (feof() == true)
+            if (feof())
                 return false;
 
             c = (byte) fgetc();
             squote = true;
         }
         if (c == '\"') {
-            if (feof() == true)
+            if (feof())
                 return false;
 
             c = (byte) fgetc();
@@ -301,7 +299,7 @@ public class File {
         }
 
         while (true) {
-            buff.add(new Byte(c));
+            buff.add(c);
             c = (byte) fgetc();
             if (squote && c == '\'')
                 break;
@@ -312,37 +310,37 @@ public class File {
                     break;
                 if (c == '\n')
                     break;
-                if (feof() == true)
+                if (feof())
                     break;
             }
         }
 
         byte[] bbuf = new byte[buff.size()];
         for (int i = 0; i < buff.size(); i++)
-            bbuf[i] = buff.get(i).byteValue();
+            bbuf[i] = buff.get(i);
         sb.append(new String(bbuf));
 
         return true;
     }
 
-    Boolean get_token(StringBuffer sb) {
-        ArrayList<Byte> buff = new ArrayList<Byte>();
+    boolean get_token(StringBuffer sb) {
+        List<Byte> buff = new ArrayList<>();
         sb.delete(0, sb.length());
 
-        if (feof() == true)
+        if (feof())
             return false;
 
         byte c = (byte) fgetc();
         while (c == ' ' || c == '\n' || c == '\t') {
-            if (feof() == true)
+            if (feof())
                 return false;
             c = (byte) fgetc();
             if (c == EOF)
                 return false;
         }
-        for (; c != ' ' && c != '\n' && c != '\t'; ) {
-            buff.add(new Byte(c));
-            if (feof() == true)
+        while (c != ' ' && c != '\n' && c != '\t') {
+            buff.add(c);
+            if (feof())
                 break;
             c = (byte) fgetc();
             if (c == EOF)
@@ -350,29 +348,29 @@ public class File {
         }
         byte[] bbuf = new byte[buff.size()];
         for (int i = 0; i < buff.size(); i++)
-            bbuf[i] = buff.get(i).byteValue();
+            bbuf[i] = buff.get(i);
 
         sb.append(new String(bbuf));
         return true;
     }
 
-    Boolean get_token_with_separator(StringBuffer sb, char separator) {
+    boolean get_token_with_separator(StringBuffer sb, char separator) {
         sb.delete(0, sb.length());
-        ArrayList<Character> buff = new ArrayList<Character>();
+        List<Character> buff = new ArrayList<>();
 //		char[] buff = new char[Constant.MAXBUFLEN];
-        if (feof() == true)
+        if (feof())
             return false;
         char c = (char) fgetc();
         while (c == separator) {
-            if (feof() == true)
+            if (feof())
                 return false;
             c = (char) fgetc();
             if (c == EOF)
                 return false;
         }
-        for (; c != separator; ) {
-            buff.add(new Character(c));
-            if (feof() == true)
+        while (c != separator) {
+            buff.add(c);
+            if (feof())
                 break;
             c = (char) fgetc();
             if (c == EOF)
@@ -380,7 +378,7 @@ public class File {
         }
         char[] bbuf = new char[buff.size()];
         for (int i = 0; i < buff.size(); i++)
-            bbuf[i] = buff.get(i).charValue();
+            bbuf[i] = buff.get(i);
         sb.append(new String(bbuf));
 
         return true;

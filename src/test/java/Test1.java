@@ -7,7 +7,6 @@
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.CountDownLatch;
 
@@ -18,7 +17,6 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineEvent;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
 import vavi.util.properties.annotation.Property;

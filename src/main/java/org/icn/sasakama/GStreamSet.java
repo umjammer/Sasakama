@@ -54,10 +54,10 @@ public class GStreamSet {
         gspeech = null;
     }
 
-    public Boolean create(PStreamSet pss, Condition condition, Audio audio) {
+    public boolean create(PStreamSet pss, Condition condition, Audio audio) {
         /* check */
         if (gstream != null || gspeech != null) {
-            Misc.error("Sasakama_GStreaSet.create: not initialized().");
+            Misc.error("GStreaSet.create: not initialized().");
             return false;
         }
 
@@ -123,11 +123,11 @@ public class GStreamSet {
         if (audio != null) {
             //System.err.printf("audio_open!\n");
             audio.open();
-            if (audio.isActive() == false)
+            if (!audio.isActive())
                 audio.start();
         }
 
-        for (int i = 0; i < total_frame && condition.stop == false; i++) {
+        for (int i = 0; i < total_frame && !condition.stop; i++) {
             int j = i * condition.fperiod;
             double[] lpf = null;
             if (nstream >= 3)

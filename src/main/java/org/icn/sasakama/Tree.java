@@ -66,7 +66,7 @@ public class Tree {
         int left;
         head = null;
 
-        //System.err.printf("in parse_pattern: %s\n", string);
+//        System.err.printf("in parse_pattern: %s\n", string);
 
         if ((left = string.indexOf('{')) != -1) {
             StringBuilder sb = new StringBuilder(string);
@@ -90,7 +90,7 @@ public class Tree {
                     head = pattern;
 
                 pattern.string = sb.substring(0, left);
-                //System.err.printf("parse_pattern:%s\n", pattern.string);
+//                System.err.printf("parse_pattern:%s\n", pattern.string);
                 sb.delete(0, left + 1);
                 pattern.next = null;
                 last_pattern = pattern;
@@ -98,12 +98,12 @@ public class Tree {
         }
     }
 
-    public Boolean load(File hf, Question question) {
+    public boolean load(File hf, Question question) {
         if (hf == null)
             return false;
 
         StringBuffer sb = new StringBuffer();
-        if (hf.get_pattern_token(sb) == false) {
+        if (!hf.get_pattern_token(sb)) {
             clear();
             return false;
         }
@@ -114,23 +114,23 @@ public class Tree {
 
         if (sb.charAt(0) == '{') {
             sb = new StringBuffer();
-            while (hf.get_pattern_token(sb) == true && sb.charAt(0) != '}') {
+            while (hf.get_pattern_token(sb) && sb.charAt(0) != '}') {
                 //	System.err.printf("tree_load buff1:%s\n", sb.toString());
                 node = last_node.find(Integer.parseInt(sb.toString()));
                 if (node == null) {
-                    Misc.error("Tree.load: Cannot find node " + sb.toString());
+                    Misc.error("Tree.load: Cannot find node " + sb);
                     clear();
                     return false;
                 }
                 sb = new StringBuffer();
-                if (hf.get_pattern_token(sb) == false) {
+                if (!hf.get_pattern_token(sb)) {
                     clear();
                     return false;
                 }
                 //System.err.printf("tree_load buff2:%s\n", sb.toString());
                 node.quest = question.find(sb.toString());
                 if (node.quest == null) {
-                    Misc.error("Tree.load: Cannot find question " + sb.toString());
+                    Misc.error("Tree.load: Cannot find question " + sb);
                     clear();
                     return false;
                 }
@@ -138,7 +138,7 @@ public class Tree {
                 node.no = new Node();
 
                 sb = new StringBuffer();
-                if (hf.get_pattern_token(sb) == false) {
+                if (!hf.get_pattern_token(sb)) {
                     node.quest = null;
                     node.yes = null;
                     node.no = null;
@@ -156,23 +156,21 @@ public class Tree {
                 last_node = node.no;
 
                 sb = new StringBuffer();
-                if (hf.get_pattern_token(sb) == false) {
+                if (!hf.get_pattern_token(sb)) {
                     node.quest = null;
                     node.yes = null;
                     node.no = null;
                     clear();
                     return false;
                 }
-                //System.err.printf("tree_load buff4:%s\n", sb.toString());
-				/*
-				if(Misc.is_num(sb.toString()))
-					System.err.printf("tree_load true\n");
-				*/
+//                System.err.printf("tree_load buff4:%s\n", sb.toString());
+//                if (Misc.is_num(sb.toString()))
+//                    System.err.printf("tree_load true\n");
                 if (Misc.is_num(sb.toString()))
                     node.yes.index = Integer.parseInt(sb.toString());
                 else {
                     node.yes.pdf = Misc.name2num(sb.toString());
-                    //System.err.printf("name2num: yes, buff:%s num:%d\n", sb.toString(), node.yes.pdf);
+//                    System.err.printf("name2num: yes, buff:%s num:%d\n", sb.toString(), node.yes.pdf);
                 }
                 node.yes.next = last_node;
                 last_node = node.yes;
@@ -184,7 +182,7 @@ public class Tree {
         return true;
     }
 
-    public int search_node(final String string) {
+    public int search_node(String string) {
         Node node = root;
 
         while (node != null) {

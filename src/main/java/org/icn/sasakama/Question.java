@@ -57,19 +57,19 @@ public class Question {
         initialize();
     }
 
-    public Boolean load(File hf) {
-        if (hf.feof() == true)
+    public boolean load(File hf) {
+        if (hf.feof())
             return false;
         clear();
 
         StringBuffer sb = new StringBuffer();
-        if (hf.get_pattern_token(sb) == false)
+        if (!hf.get_pattern_token(sb))
             return false;
         this.string = sb.toString();
         //System.err.printf("string1:%s\n", this.string);
 
         sb = new StringBuffer();
-        if (hf.get_pattern_token(sb) == false) {
+        if (!hf.get_pattern_token(sb)) {
             clear();
             return false;
         }
@@ -79,7 +79,7 @@ public class Question {
         if (sb.charAt(0) == '{') {
             while (true) {
                 sb = new StringBuffer();
-                if (hf.get_pattern_token(sb) == false) {
+                if (!hf.get_pattern_token(sb)) {
                     clear();
                     return false;
                 }
@@ -93,7 +93,7 @@ public class Question {
                 pattern.string = sb.toString();
                 pattern.next = null;
                 sb = new StringBuffer();
-                if (hf.get_pattern_token(sb) == false) {
+                if (!hf.get_pattern_token(sb)) {
                     clear();
                     return false;
                 }
@@ -107,7 +107,7 @@ public class Question {
         return true;
     }
 
-    public Boolean match(final String string) {
+    public boolean match(String string) {
         for (Pattern pattern = head; pattern != null; pattern = pattern.next)
             if (Misc.pattern_match(string, pattern.string))
                 return true;
@@ -115,9 +115,9 @@ public class Question {
         return false;
     }
 
-    public Question find(final String string) {
+    public Question find(String string) {
         for (Question question = this; question != null; question = question.next)
-            if (string.equals(question.string) == true)
+            if (string.equals(question.string))
                 return question;
         return null;
     }

@@ -41,15 +41,13 @@ public class SStream {
     double[] msd;
     Window win;
     Gv gv;
-	/*
-	int win_size;
-	int[] win_l_width;
-	int[] win_r_width;
-	double[][] win_coefficient;
-	int win_max_width;
-
-	double[] gv_mean;
-	double[] gv_vari;
-	Boolean[] gv_switch;
-	*/
+//	int win_size;
+//	int[] win_l_width;
+//	int[] win_r_width;
+//	double[][] win_coefficient;
+//	int win_max_width;
+//
+//	double[] gv_mean;
+//	double[] gv_vari;
+//	boolean[] gv_switch;
 }

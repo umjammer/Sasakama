@@ -56,8 +56,8 @@ public class SStreamSet {
         total_frame = 0;
     }
 
-    public Boolean create(ModelSet ms, Label label, Condition condition) {
-        Boolean phoneme_alignment_flag = condition.phoneme_alignment_flag;
+    public boolean create(ModelSet ms, Label label, Condition condition) {
+        boolean phoneme_alignment_flag = condition.phoneme_alignment_flag;
         double speed = condition.speed;
         double[] duration_iw = condition.duration_iw;
         double[][] parameter_iw = condition.parameter_iw;
@@ -103,7 +103,7 @@ public class SStreamSet {
             }
         }
 
-        /* initialize state sequence */
+        // initialize state sequence
         nstate = ms.get_nstate();
         nstream = ms.get_nstream();
 
@@ -113,7 +113,7 @@ public class SStreamSet {
         duration = new int[total_state];
         sstream = new SStream[nstream];
 
-        //System.err.printf("nstate:%d nstream:%d\n", nstate, nstream);
+//        System.err.printf("nstate:%d nstream:%d\n", nstate, nstream);
         for (int i = 0; i < nstream; i++) {
             sstream[i] = new SStream();
             SStream sst = sstream[i];
@@ -128,7 +128,7 @@ public class SStreamSet {
 
             if (ms.use_gv(i)) {
                 sst.gv = new Gv();
-                sst.gv.gv_switch = new Boolean[total_state];
+                sst.gv.gv_switch = new boolean[total_state];
                 for (int j = 0; j < total_state; j++)
                     sst.gv.gv_switch[j] = true;
             } else {
@@ -140,11 +140,11 @@ public class SStreamSet {
         double[] duration_vari = new double[total_state];
 
         for (int i = 0; i < label.get_size(); i++) {
-            //		System.err.printf("label[%d]:%s\n", i, label.get_string(i));
+//            System.err.printf("label[%d]:%s\n", i, label.get_string(i));
             ms.get_duration(label.get_string(i), duration_iw, duration_mean, duration_vari, i * nstate);
         }
-        if (phoneme_alignment_flag == true) {
-            /* use duration set by user */
+        if (phoneme_alignment_flag) {
+            // use duration set by user
             int next_time = 0;
             int next_state = 0;
             int state = 0;
@@ -162,7 +162,7 @@ public class SStreamSet {
                 state += nstate;
             }
         } else {
-            /* determine frame length */
+            // determine frame length
             if (speed != 1.0) {
                 temp = 0.0;
                 for (int i = 0; i < total_state; i++) {
@@ -175,11 +175,11 @@ public class SStreamSet {
             }
         }
 
-        /* get parameter */
+        // get parameter
         int state = 0;
         for (int i = 0; i < label.get_size(); i++) {
             for (int j = 2; j <= nstate + 1; j++) {
-                //System.err.printf("duration[%d]:%d\n", state, duration[state]);
+//                System.err.printf("duration[%d]:%d\n", state, duration[state]);
                 total_frame += duration[state];
                 for (int k = 0; k < nstream; k++) {
                     SStream sst = sstream[k];
@@ -195,12 +195,12 @@ public class SStreamSet {
             }
         }
 
-        /* copy dynamic window */
+        // copy dynamic window
         for (int i = 0; i < nstream; i++) {
             sstream[i].win = new Window(ms.window[i]);
         }
 
-        /* determine GV */
+        // determine GV
         for (int i = 0; i < nstream; i++) {
             SStream sst = sstream[i];
             if (ms.use_gv(i)) {
@@ -211,18 +211,16 @@ public class SStreamSet {
         }
 
         for (int i = 0; i < label.get_size(); i++) {
-            //System.err.printf("label.get_string: %s ", label.get_string(i));
-            if (ms.get_gv_flag(label.get_string(i)) == false) {
-                //System.err.printf(" false\n");
+//            System.err.printf("label.get_string: %s ", label.get_string(i));
+            if (!ms.get_gv_flag(label.get_string(i))) {
+//                System.err.printf(" false\n");
                 for (int j = 0; j < nstream; j++)
-                    if (ms.use_gv(j) == true)
+                    if (ms.use_gv(j))
                         for (int k = 0; k < nstate; k++)
                             sstream[j].gv.gv_switch[i * nstate + k] = false;
+//            } else {
+//                System.err.printf(" true\n");
             }
-			/*
-			else
-				System.err.printf(" true\n");
-				*/
         }
         return true;
     }
@@ -235,7 +233,7 @@ public class SStreamSet {
         return sstream[stream_index].vector_length;
     }
 
-    public Boolean is_msd(int stream_index) {
+    public boolean is_msd(int stream_index) {
         return sstream[stream_index].msd != null ? true : false;
     }
 
@@ -271,7 +269,7 @@ public class SStreamSet {
         return sstream[stream_index].win.max_width;
     }
 
-    public Boolean use_gv(int stream_index) {
+    public boolean use_gv(int stream_index) {
         return sstream[stream_index].gv != null ? true : false;
     }
 
@@ -303,11 +301,11 @@ public class SStreamSet {
         return sstream[stream_index].gv.vari[vector_index];
     }
 
-    public void set_gv_switch(int stream_index, int state_index, Boolean flag) {
+    public void set_gv_switch(int stream_index, int state_index, boolean flag) {
         sstream[stream_index].gv.gv_switch[state_index] = flag;
     }
 
-    public Boolean get_gv_switch(int stream_index, int state_index) {
+    public boolean get_gv_switch(int stream_index, int state_index) {
         return sstream[stream_index].gv.gv_switch[state_index];
     }
 
@@ -331,7 +329,7 @@ public class SStreamSet {
     }
 
     private double set_specified_duration(int[] duration, double[] mean, double[] vari, int size, double frame_length, int base) {
-        int target_length = 0;
+        int target_length;
 
         if (frame_length + 0.5 < 1.0)
             target_length = 1;
@@ -344,7 +342,7 @@ public class SStreamSet {
             for (int i = 0; i < size; i++)
                 duration[base + i] = 1;
 
-            return (double) size;
+            return size;
         }
 
         /* RHO calculation */
@@ -367,7 +365,7 @@ public class SStreamSet {
             sum += duration[base + i];
         }
 
-        int j = 0;
+        int j;
         /* loop estimation */
         while (target_length != sum) {
             if (target_length > sum) {
@@ -397,6 +395,6 @@ public class SStreamSet {
             }
         }
 
-        return (double) target_length;
+        return target_length;
     }
 }

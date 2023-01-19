@@ -94,12 +94,12 @@ public class Engine {
         gss = new GStreamSet();
     }
 
-    public Boolean load(String[] voices) {
+    public boolean load(String[] voices) {
 
         /* reset engine */
         clear();
 
-        if (ms.load(voices) != true) {
+        if (!ms.load(voices)) {
             clear();
             return false;
         }
@@ -132,11 +132,7 @@ public class Engine {
         m = p.matcher(option);
         if (m.find()) {
             int b = Integer.parseInt(m.group(1));
-            if (b == 1) {
-                condition.use_log_gain = true;
-            } else {
-                condition.use_log_gain = false;
-            }
+            condition.use_log_gain = b == 1;
         }
 
         regex = "ALPHA=(-?\\d+\\.?\\d+)";
@@ -194,11 +190,11 @@ public class Engine {
         audio.set_parameter(condition.sampling_frequency, condition.audio_buff_size);
     }
 
-    public void set_stop_flag(Boolean b) {
+    public void set_stop_flag(boolean b) {
         condition.stop = b;
     }
 
-    public Boolean get_stop_flag() {
+    public boolean get_stop_flag() {
         return condition.stop;
     }
 
@@ -239,7 +235,7 @@ public class Engine {
         condition.speed = f;
     }
 
-    public void set_phoneme_alignment_flag(Boolean b) {
+    public void set_phoneme_alignment_flag(boolean b) {
         condition.phoneme_alignment_flag = b;
     }
 
@@ -347,8 +343,8 @@ public class Engine {
         return gss.get_speech(index);
     }
 
-    public Boolean generate_state_sequence() {
-        if (sss.create(ms, label, condition) != true) {
+    public boolean generate_state_sequence() {
+        if (!sss.create(ms, label, condition)) {
             refresh();
             return false;
         }
@@ -374,49 +370,49 @@ public class Engine {
         return true;
     }
 
-    public Boolean generate_state_sequence_from_fn(String fn) {
+    public boolean generate_state_sequence_from_fn(String fn) {
         refresh();
         label.load_from_fn(condition.sampling_frequency, condition.fperiod, fn);
         return generate_state_sequence();
     }
 
-    public Boolean generate_state_sequence_from_strings(String[] lines) {
+    public boolean generate_state_sequence_from_strings(String[] lines) {
         refresh();
         label.load_from_strings(condition.sampling_frequency, condition.fperiod, lines);
         return generate_state_sequence();
     }
 
-    public Boolean generate_parameter_sequence() {
+    public boolean generate_parameter_sequence() {
         return pss.create(sss, condition.msd_threshold, condition.gv_weight);
     }
 
-    public Boolean generate_sample_sequence() {
+    public boolean generate_sample_sequence() {
         return gss.create(pss, condition, (condition.audio_buff_size > 0) ? audio : null);
     }
 
-    public Boolean synthesize() {
-        if (generate_state_sequence() != true) {
+    public boolean synthesize() {
+        if (!generate_state_sequence()) {
             refresh();
             return false;
         }
-        if (generate_parameter_sequence() != true) {
+        if (!generate_parameter_sequence()) {
             refresh();
             return false;
         }
-        if (generate_sample_sequence() != true) {
+        if (!generate_sample_sequence()) {
             refresh();
             return false;
         }
         return true;
     }
 
-    public Boolean synthesize_from_fn(String fn) {
+    public boolean synthesize_from_fn(String fn) {
         label.load_from_fn(condition.sampling_frequency, condition.fperiod, fn);
         return synthesize();
 
     }
 
-    public Boolean synthesize_from_strings(String[] lines) {
+    public boolean synthesize_from_strings(String[] lines) {
         refresh();
         label.load_from_strings(condition.sampling_frequency, condition.fperiod, lines);
         return synthesize();
@@ -425,8 +421,8 @@ public class Engine {
     public void save_information(FileOutputStream fos) {
         PrintStream ps = new PrintStream(fos, true);
 
-        /* global parameter */
-        ps.printf("[Global parameter]\n");
+        // global parameter
+        ps.print("[Global parameter]\n");
         ps.printf("Sampring frequency                     -> %8d(Hz)\n", condition.sampling_frequency);
         ps.printf("Frame period                           -> %8d(point)\n", condition.fperiod);
         ps.printf("                                          %8.5f(msec)\n", 1e+3 * condition.fperiod / condition.sampling_frequency);
@@ -434,22 +430,22 @@ public class Engine {
         ps.printf("Gamma                                  -> %8.5f\n", condition.stage == 0 ? 0.0 : -1.0 / condition.stage);
 
         if (condition.stage != 0) {
-            if (condition.use_log_gain == true)
-                ps.printf("Log gain flag                          ->     TRUE\n");
+            if (condition.use_log_gain)
+                ps.print("Log gain flag                          ->     TRUE\n");
             else
-                ps.printf("Log gain flag                          ->    FALSE\n");
+                ps.print("Log gain flag                          ->    FALSE\n");
         }
 
         ps.printf("Postfiltering coefficient              -> %8.5f\n", condition.beta);
         ps.printf("Audio buffer size                      -> %8d(sample)\n", condition.audio_buff_size);
-        ps.printf("\n");
+        ps.print("\n");
 
-        /* duration parameter */
-        ps.printf("[Duration parameter]\n");
+        // duration parameter
+        ps.print("[Duration parameter]\n");
         ps.printf("Number of states                       -> %8d\n", ms.get_nstate());
         ps.printf("         Interpolation size            -> %8d\n", ms.get_nvoices());
 
-        /* check interpolation */
+        // check interpolation
         double temp = 0.0;
         for (int i = 0; i < ms.get_nvoices(); i++)
             temp += condition.duration_iw[i];
@@ -458,14 +454,14 @@ public class Engine {
                 condition.duration_iw[i] /= temp;
         for (int i = 0; i < ms.get_nvoices(); i++)
             ps.printf("         Interpolation weight[%2d]      -> %8.0f(%%)\n", i, (float) (100 * condition.duration_iw[i]));
-        ps.printf("\n");
+        ps.print("\n");
 
-        ps.printf("[Stream parameter]\n");
+        ps.print("[Stream parameter]\n");
         for (int i = 0; i < ms.get_nstream(); i++) {
-            /* stream parameter */
+            // stream parameter
             ps.printf("Stream[%2d] vector length               -> %8d\n", i, ms.get_vector_length(i));
             ps.printf("           Dynamic window size         -> %8d\n", ms.get_window_size(i));
-            /* interpolation */
+            // interpolation
             ps.printf("           Interpolation size          -> %8d\n", ms.get_nvoices());
 
             temp = 0.0;
@@ -476,21 +472,21 @@ public class Engine {
                     condition.parameter_iw[j][i] /= temp;
             for (int j = 0; j < ms.get_nvoices(); j++)
                 ps.printf("           Interpolation weight[%2d]    -> %8.0f(%%)\n", j, 100.0 * condition.parameter_iw[i][j]);
-            /* MSD */
+            // MSD
             if (ms.is_msd(i)) {
-                ps.printf("           MSD flag                    ->     TRUE\n");
+                ps.print("           MSD flag                    ->     TRUE\n");
                 ps.printf("           MSD threshold               -> %8.5f\n", condition.msd_threshold[i]);
             } else {
-                ps.printf("           MSD flag                    ->    FALSE\n");
+                ps.print("           MSD flag                    ->    FALSE\n");
             }
 
-            /* GV */
+            // GV
             if (ms.use_gv(i)) {
-                ps.printf("           GV flag                     ->     TRUE\n");
+                ps.print("           GV flag                     ->     TRUE\n");
                 ps.printf("           GV weight                   -> %8.0f(%%)\n", 100.0 * condition.gv_weight[i]);
                 ps.printf("           GV interpolation size       -> %8d\n", ms.get_nvoices());
 
-                /* interpolation */
+                // interpolation
                 temp = 0.0;
                 for (int j = 0; j < ms.get_nvoices(); j++)
                     temp += condition.gv_iw[j][i];
@@ -500,13 +496,13 @@ public class Engine {
                 for (int j = 0; j < ms.get_nvoices(); j++)
                     ps.printf("           GV interpolation weight[%2d] -> %8.0f(%%)\n", j, 100.0 * condition.gv_iw[j][i]);
             } else {
-                ps.printf("           GV flag                     ->    FALSE\n");
+                ps.print("           GV flag                     ->    FALSE\n");
             }
         }
-        ps.printf("\n");
+        ps.print("\n");
 
-        /* generated sequence */
-        ps.printf("[Generated sequence]\n");
+        // generated sequence
+        ps.print("[Generated sequence]\n");
         ps.printf("Number of HMMs                         -> %8d\n", label.get_size());
         ps.printf("Number of stats                        -> %8d\n", label.get_size() * ms.get_nstate());
         ps.printf("Length of this speech                  -> %8.3f(sec)\n", (double) pss.get_total_frame() * condition.fperiod / condition.sampling_frequency);
@@ -515,7 +511,7 @@ public class Engine {
         for (int i = 0; i < label.get_size(); i++) {
             ps.printf("HMM[%2d]\n", i);
             ps.printf("  Name                                 -> %s\n", label.get_string(i));
-            ps.printf("  Duration\n");
+            ps.print("  Duration\n");
             for (int j = 0; j < ms.get_nvoices(); j++) {
                 ps.printf("    Interpolation[%2d]\n", j);
                 int[] k = new int[1];
@@ -532,9 +528,9 @@ public class Engine {
                     ps.printf("    Stream[%2d]\n", k);
                     if (ms.is_msd(k)) {
                         if (sss.get_msd(k, i * ms.get_nstate() + j) > condition.msd_threshold[k])
-                            ps.printf("      MSD flag                         ->     TRUE\n");
+                            ps.print("      MSD flag                         ->     TRUE\n");
                         else
-                            ps.printf("      MSD flag                         ->    FALSE\n");
+                            ps.print("      MSD flag                         ->    FALSE\n");
                     }
                     for (int l = 0; l < ms.get_nvoices(); l++) {
                         ps.printf("      Interpolation[%2d]\n", l);
@@ -551,7 +547,7 @@ public class Engine {
     }
 
     public String[] get_label() {
-        ArrayList<String> array = new ArrayList<String>();
+        ArrayList<String> array = new ArrayList<>();
 
         int nstate = ms.get_nstate();
         double rate = condition.fperiod * Constant.TIME_CONSTANT / condition.sampling_frequency;
@@ -575,21 +571,18 @@ public class Engine {
 
     public void save_label(FileOutputStream fos) {
         PrintStream ps = new PrintStream(fos, true);
-		/*
-		int nstate = ms.get_nstate();
-		double rate = condition.fperiod * Constant.TIME_CONSTANT / condition.sampling_frequency;
-		
-		for(int i=0, state = 0, frame = 0; i < label.get_size();i++){
-			int duration = 0;
-			for(int j=0;j < nstate;j++)
-				duration += sss.get_duration(state++);
-			ps.printf("%d %d %s\n", (int)(frame*rate), (int)((frame+duration)*rate), label.get_string(i));
-			frame += duration;
-		}
-		*/
+//        int nstate = ms.get_nstate();
+//        double rate = condition.fperiod * Constant.TIME_CONSTANT / condition.sampling_frequency;
+//
+//        for (int i = 0, state = 0, frame = 0; i < label.get_size(); i++) {
+//            int duration = 0;
+//            for (int j = 0; j < nstate; j++)
+//                duration += sss.get_duration(state++);
+//            ps.printf("%d %d %s\n", (int) (frame * rate), (int) ((frame + duration) * rate), label.get_string(i));
+//            frame += duration;
+//        }
         String[] label = get_label();
-        for (int i = 0; i < label.length; i++)
-            ps.printf("%s\n", label[i]);
+        for (String s : label) ps.printf("%s\n", s);
 
         ps.close();
     }
@@ -644,10 +637,8 @@ public class Engine {
     public void save_riff(FileOutputStream fos) {
         byte[] wavData = new byte[gss.get_total_nsamples() * Short.SIZE / Byte.SIZE];
         ByteBuffer bf = ByteBuffer.wrap(wavData);
-		/*
-		System.err.printf("sample:%d\n", gss.get_total_nsamples());
-		System.err.printf("sampling:%d", condition.sampling_frequency);
-		*/
+//        System.err.printf("sample:%d\n", gss.get_total_nsamples());
+//        System.err.printf("sampling:%d", condition.sampling_frequency);
         for (int i = 0; i < gss.get_total_nsamples(); i++) {
             double x = gss.get_speech(i);
             short temp;

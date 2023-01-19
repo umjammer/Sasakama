@@ -71,7 +71,7 @@ public class Label {
     public void load(int sampling_rate, int fperiod, File hf) {
         LabelString lstring = null;
 
-        final double rate = (double) sampling_rate / ((double) fperiod * Constant.TIME_CONSTANT);
+        double rate = (double) sampling_rate / ((double) fperiod * Constant.TIME_CONSTANT);
 
         if (head != null || size != 0) {
             Misc.error("Label.load: label is uninitialized.");
@@ -95,10 +95,10 @@ public class Label {
                 head = lstring;
             }
             if (Misc.is_num(buff.toString())) {
-                double st = Double.valueOf(buff.toString());
+                double st = Double.parseDouble(buff.toString());
                 hf.get_token(buff);
                 //System.err.printf("tok1:%s\n", buff);
-                double ed = Double.valueOf(buff.toString());
+                double ed = Double.parseDouble(buff.toString());
                 hf.get_token(buff);
                 //System.err.printf("tok2:%s\n", buff);
 
@@ -115,7 +115,7 @@ public class Label {
         check_time();
     }
 
-    public void load_from_fn(int sampling_rate, int fperiod, final String fn) {
+    public void load_from_fn(int sampling_rate, int fperiod, String fn) {
         File hf = new File();
         hf.open(fn, "r");
         load(sampling_rate, fperiod, hf);
@@ -124,7 +124,7 @@ public class Label {
 
     public void load_from_strings(int sampling_rate, int fperiod, String[] lines) {
         LabelString lstring = null;
-        final double rate = (double) sampling_rate / ((double) fperiod * Constant.TIME_CONSTANT);
+        double rate = (double) sampling_rate / ((double) fperiod * Constant.TIME_CONSTANT);
         double st, ed;
 
         if (head != null || size != 0) {
@@ -133,8 +133,8 @@ public class Label {
         }
 
         /* copy label */
-        for (int i = 0; i < lines.length; i++) {
-            if (!Misc.is_graph(lines[i].substring(0, 1)))
+        for (String line : lines) {
+            if (!Misc.is_graph(line.substring(0, 1)))
                 break;
             size++;
 
@@ -148,19 +148,19 @@ public class Label {
             int[] data_index = new int[1];
             data_index[0] = 0;
             StringBuffer sb = new StringBuffer();
-            if (Misc.is_num(lines[i])) {
-                Misc.get_token_from_string(lines[i], data_index, sb);
-                st = Double.valueOf(sb.toString());
-                Misc.get_token_from_string(lines[i], data_index, sb);
-                ed = Double.valueOf(sb.toString());
-                Misc.get_token_from_string(lines[i], data_index, sb);
+            if (Misc.is_num(line)) {
+                Misc.get_token_from_string(line, data_index, sb);
+                st = Double.parseDouble(sb.toString());
+                Misc.get_token_from_string(line, data_index, sb);
+                ed = Double.parseDouble(sb.toString());
+                Misc.get_token_from_string(line, data_index, sb);
                 lstring.name = sb.toString();
                 lstring.start = rate * st;
                 lstring.end = rate * ed;
             } else {
                 lstring.start = -1.0;
                 lstring.end = -1.0;
-                lstring.name = lines[i];
+                lstring.name = line;
             }
             lstring.next = null;
         }

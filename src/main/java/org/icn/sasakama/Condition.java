@@ -38,16 +38,16 @@ public class Condition {
     int sampling_frequency;
     int fperiod;
     int audio_buff_size;
-    Boolean stop;
+    boolean stop;
     double volume;
     double[] msd_threshold;
     double[] gv_weight;
 
-    Boolean phoneme_alignment_flag;
+    boolean phoneme_alignment_flag;
     double speed;
 
     int stage;
-    Boolean use_log_gain;
+    boolean use_log_gain;
     double alpha;
     double beta;
 

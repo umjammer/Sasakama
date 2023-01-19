@@ -48,27 +48,24 @@ public class PStream {
     double[][] par;
     SMatrices sm;
     Window win;
-	
-	/*
-	int win_size;
-	int[] win_l_width;
-	int[] win_r_width;
-	double[][] win_coefficient;
-	*/
 
-    Boolean[] msd_flag;
+//	int win_size;
+//	int[] win_l_width;
+//	int[] win_r_width;
+//	double[][] win_coefficient;
+
+    boolean[] msd_flag;
     Gv gv;
 
-    /*
-    double[] gv_mean;
-    double[] gv_vari;
-    Boolean[] gv_switch;
-    int gv_length;
-    */
+//    double[] gv_mean;
+//    double[] gv_vari;
+//    boolean[] gv_switch;
+//    int gv_length;
+
     PStream() {
     }
 
-    /* calc_wuw_and_wum: calcurate W'U^{-1}W and W'U^{-1}M */
+    /** calc_wuw_and_wum: calcurate W'U^{-1}W and W'U^{-1}M */
     public void calc_wuw_and_wum(int m) {
 
         for (int t = 0; t < length; t++) {
@@ -76,7 +73,7 @@ public class PStream {
             for (int i = 0; i < width; i++)
                 sm.wuw[t][i] = 0.0;
 
-            /* calc WUW and WUM */
+            // calc WUW and WUM
             for (int i = 0; i < win.size; i++)
                 for (int shift = win.l_width[i]; shift <= win.r_width[i]; shift++)
                     if ((t + shift >= 0) && (t + shift < length) && (win.get_coefficient(i, -shift) != 0.0)) {
@@ -87,21 +84,19 @@ public class PStream {
                                 sm.wuw[t][j] += wu * win.get_coefficient(i, j - shift);
                     }
         }
-		/*
-		for(int t=0;t < length;t++){
-			for(int j=0;j < width;j++){
-				System.err.printf("wuw[%d][%d]:%5.2f\n", t, j, sm.wuw[t][j]);
-			}
-		}
-		for(int t=0;t < length;t++)
-			System.err.printf("wum[%d]:%5.2f\n", t, sm.wum[t]);
-			*/
+//        for (int t = 0; t < length; t++) {
+//            for (int j = 0; j < width; j++) {
+//                System.err.printf("wuw[%d][%d]:%5.2f\n", t, j, sm.wuw[t][j]);
+//            }
+//        }
+//        for (int t = 0; t < length; t++)
+//            System.err.printf("wum[%d]:%5.2f\n", t, sm.wum[t]);
     }
 
-    /* ldl_factorization: Factorize W'*U^{-1}*W to L*D*L' (L: lower triangular, D: diagonal) */
+    /** ldl_factorization: Factorize W'*U^{-1}*W to L*D*L' (L: lower triangular, D: diagonal) */
     public void ldl_factorization() {
-        //	System.err.printf("sm %dx%d\n", sm.wuw.length, sm.wuw[0].length);
-        //	System.err.printf("length:%d width:%d\n", length, width);
+//        System.err.printf("sm %dx%d\n", sm.wuw.length, sm.wuw[0].length);
+//        System.err.printf("length:%d width:%d\n", length, width);
         for (int t = 0; t < length; t++) {
             for (int i = 1; (i < width) && (t >= i); i++)
                 sm.wuw[t][0] -= sm.wuw[t - i][i] * sm.wuw[t - i][i] * sm.wuw[t - i][0];
@@ -110,7 +105,7 @@ public class PStream {
                 for (int j = 1; (i + j < width) && (t >= j); j++)
                     sm.wuw[t][i] -= sm.wuw[t - j][j] * sm.wuw[t - j][i + j] * sm.wuw[t - j][0];
                 sm.wuw[t][i] /= sm.wuw[t][0];
-                //System.err.printf("ldl sm.wuw[%d][%d]:%5.2f\n", t, i, sm.wuw[t][i]);
+//                System.err.printf("ldl sm.wuw[%d][%d]:%5.2f\n", t, i, sm.wuw[t][i]);
             }
         }
     }
@@ -120,7 +115,7 @@ public class PStream {
             sm.g[t] = sm.wum[t];
             for (int i = 1; (i < width) && (t >= i); i++)
                 sm.g[t] -= sm.wuw[t - i][i] * sm.g[t - i];
-            //System.err.printf("forward sm.g[%d]:%5.2f\n", t, sm.g[t]);
+//            System.err.printf("forward sm.g[%d]:%5.2f\n", t, sm.g[t]);
         }
     }
 
@@ -130,7 +125,7 @@ public class PStream {
             par[t][m] = sm.g[t] / sm.wuw[t][0];
             for (int i = 1; (i < width) && (t + i < length); i++)
                 par[t][m] -= sm.wuw[t][i] * par[t + i][m];
-            //System.err.printf("backward par[%d][%d]:%5.2f\n", t, m, par[t][m]);
+//            System.err.printf("backward par[%d][%d]:%5.2f\n", t, m, par[t][m]);
         }
     }
 
@@ -140,12 +135,10 @@ public class PStream {
         for (int t = 0; t < length; t++)
             if (gv.gv_switch[t]) {
                 mean[0] += par[t][m];
-                //System.err.printf("calc_gv_if: [%d] true\n", t);
+//                System.err.printf("calc_gv_if: [%d] true\n", t);
+//            } else {
+//                System.err.printf("calc_gv_if: [%d] false\n", t);
             }
-		/*
-			else
-				System.err.printf("calc_gv_if: [%d] false\n", t);
-*/
         mean[0] /= gv.length;
 
         vari[0] = 0.0;
@@ -153,7 +146,7 @@ public class PStream {
             if (gv.gv_switch[t])
                 vari[0] += (par[t][m] - mean[0]) * (par[t][m] - mean[0]);
         vari[0] /= gv.length;
-        //System.err.printf("calc_gv: mean:%5.2f vari:%5.2f\n", mean[0], vari[0]);
+//        System.err.printf("calc_gv: mean:%5.2f vari:%5.2f\n", mean[0], vari[0]);
     }
 
     public void conv_gv(int m) {
@@ -166,7 +159,7 @@ public class PStream {
         for (int t = 0; t < length; t++)
             if (gv.gv_switch[t]) {
                 par[t][m] = ratio * (par[t][m] - mean[0]) + mean[0];
-                //	System.err.printf("conv_gv: par[%d][%d]:%5.2f\n", t, m, par[t][m]);
+//                System.err.printf("conv_gv: par[%d][%d]:%5.2f\n", t, m, par[t][m]);
             }
     }
 
@@ -201,7 +194,7 @@ public class PStream {
             else
                 sm.g[t] = 1.0 / h * (W1 * w * (-sm.g[t] + sm.wum[t]));
 
-            //	System.err.printf("derivative sm.g[%d]:%5.2f\n", t, sm.g[t]);
+//            System.err.printf("derivative sm.g[%d]:%5.2f\n", t, sm.g[t]);
         }
 
         return (-(hmmobj + gvobj));
@@ -254,5 +247,4 @@ public class PStream {
             }
         }
     }
-
 }

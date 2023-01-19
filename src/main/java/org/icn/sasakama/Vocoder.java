@@ -53,27 +53,27 @@ public class Vocoder {
 	/* static final int PADEORDER = 4;
 	static final int IRLENG    = 384; */
     // else
-    static final Boolean GAUSS = true;
+    static final boolean GAUSS = true;
     static final int PADEORDER = 5;
     static final int IRLENG = 576;
 
     static final double CHECK_LSP_STABILITY_MIN = 0.25;
     static final int CHECK_LSP_STABILITY_NUM = 4;
 
-    static final Boolean NORMFLG1 = true;
-    static final Boolean NORMFLG2 = false;
-    static final Boolean MULGFLG1 = true;
-    static final Boolean MULGFLG2 = false;
-    static final Boolean NGAIN = false;
+    static final boolean NORMFLG1 = true;
+    static final boolean NORMFLG2 = false;
+    static final boolean MULGFLG1 = true;
+    static final boolean MULGFLG2 = false;
+    static final boolean NGAIN = false;
 
-    public Boolean is_first;
+    public boolean is_first;
     int stage;
     double gamma;
-    Boolean use_linear;
-    Boolean use_log_gain;
+    boolean use_linear;
+    boolean use_log_gain;
     int fprd;
     long[] next;
-    Boolean gauss;
+    boolean gauss;
     double rate;
     double pitch_of_curr_point;
     double pitch_counter;
@@ -108,10 +108,8 @@ public class Vocoder {
         if (nlpf > 0) {
             excite_buff_size = nlpf;
             excite_ring_buff = new double[excite_buff_size];
-			/*
-			for(int i=0;i < excite_buff_size;i++)
-				excite_ring_buff[i] = 0.0;
-				*/
+//            for (int i = 0; i < excite_buff_size; i++)
+//                excite_ring_buff[i] = 0.0;
             excite_buff_index = 0;
         } else {
             excite_buff_size = 0;
@@ -135,7 +133,7 @@ public class Vocoder {
         excite_ring_buff[(excite_buff_index + center) % excite_buff_size] += noise;
     }
 
-    public void excite_voiced_frame(double noise, double pulse, final double[] lpf) {
+    public void excite_voiced_frame(double noise, double pulse, double[] lpf) {
         int center = (excite_buff_size - 1) / 2;
 
         if (noise != 0.0) {
@@ -152,7 +150,7 @@ public class Vocoder {
                 excite_ring_buff[(excite_buff_index + i) % excite_buff_size] += pulse * lpf[i];
     }
 
-    public double get_excitation(final double[] lpf) {
+    public double get_excitation(double[] lpf) {
         double x;
 
         if (excite_buff_size > 0) {
@@ -201,7 +199,7 @@ public class Vocoder {
         pitch_of_curr_point = pitch;
     }
 
-    public void postfilter_mcp(double[] mcp, int mpos, final int m, double alpha, double beta) {
+    public void postfilter_mcp(double[] mcp, int mpos, int m, double alpha, double beta) {
 
         if (beta > 0.0 && m > 1) {
             if (postfilter_size < m) {
@@ -277,7 +275,7 @@ public class Vocoder {
             next[3] = 88675123L;
         }
         gauss = GAUSS;
-        this.rate = (double) condition.sampling_frequency;
+        this.rate = condition.sampling_frequency;
         // System.err.printf("rate:%5.2f\n", this.rate);
         pitch_of_curr_point = 0.0;
         pitch_counter = 0.0;
@@ -409,7 +407,7 @@ public class Vocoder {
     public void clear() {
     }
 
-    private static final double pade[] = {
+    private static final double[] pade = {
             1.00000000000,
             1.00000000000,
             0.00000000000,
@@ -433,7 +431,7 @@ public class Vocoder {
             0.00003041721
     };
 
-    private void movem(double[] a, int apos, double[] b, int bpos, final int nitem) {
+    private void movem(double[] a, int apos, double[] b, int bpos, int nitem) {
         if (apos > bpos) {
             int cnt = 0;
             while (cnt < nitem) {
@@ -449,7 +447,7 @@ public class Vocoder {
         }
     }
 
-    private double mlsafir(final double x, final double[] b, final int bpos, final int m, final double a, final double aa, double d[], final int dpos) {
+    private double mlsafir(double x, double[] b, int bpos, int m, double a, double aa, double[] d, int dpos) {
         double y = 0.0;
 
         d[dpos + 0] = x;
@@ -467,7 +465,7 @@ public class Vocoder {
         return y;
     }
 
-    private double mlsadf1(double x, final double[] b, final int bpos, final int m, final double a, final double aa, final int pd, final double[] d, final int dpos, final double[] ppade, final int padepos) {
+    private double mlsadf1(double x, double[] b, int bpos, int m, double a, double aa, int pd, double[] d, int dpos, double[] ppade, int padepos) {
         double v, out = 0.0;
         int pt = dpos + pd + 1;
 
@@ -486,7 +484,7 @@ public class Vocoder {
         return out;
     }
 
-    private double mlsadf2(double x, final double[] b, final int bpos, final int m, final double a, final double aa, final int pd, final double[] d, int dpos, final double[] ppade, final int padepos) {
+    private double mlsadf2(double x, double[] b, int bpos, int m, double a, double aa, int pd, double[] d, int dpos, double[] ppade, int padepos) {
         double out = 0.0;
 
         int pt = dpos + pd * (m + 2);
@@ -505,8 +503,8 @@ public class Vocoder {
         return out;
     }
 
-    private double mlsadf(double x, final double[] b, int bpos, final int m, final double a, final int pd, double[] d, int dpos) {
-        final double aa = 1 - a * a;
+    private double mlsadf(double x, double[] b, int bpos, int m, double a, int pd, double[] d, int dpos) {
+        double aa = 1 - a * a;
         int padepos = pd * (pd + 1) / 2;
 
         x = mlsadf1(x, b, bpos, m, a, aa, pd, d, dpos, pade, padepos);
@@ -579,7 +577,7 @@ public class Vocoder {
         return (x0);
     }
 
-    private void mc2b(double[] mc, int mcpos, double[] b, int bpos, int m, final double a) {
+    private void mc2b(double[] mc, int mcpos, double[] b, int bpos, int m, double a) {
 		/*
 		if(! (mcpos == bpos && mc.equals(b)) ){
 			if(a != 0.0){
@@ -599,7 +597,7 @@ public class Vocoder {
             b[bpos + m] = mc[mcpos + m] - a * b[bpos + m + 1];
     }
 
-    private void b2mc(final double[] b, int bpos, double[] mc, int mcpos, int m, final double a) {
+    private void b2mc(double[] b, int bpos, double[] mc, int mcpos, int m, double a) {
         double d = mc[mcpos + m] = b[bpos + m];
         for (m--; m >= 0; m--) {
             double o = b[bpos + m] + a * d;
@@ -608,8 +606,8 @@ public class Vocoder {
         }
     }
 
-    private void freqt(final double[] c1, int c1pos, final int m1, final double[] c2, int c2pos, final int m2, final double a) {
-        final double b = 1 - a * a;
+    private void freqt(double[] c1, int c1pos, int m1, double[] c2, int c2pos, int m2, double a) {
+        double b = 1 - a * a;
 
         if (m2 > freqt_size) {
             freqt_buff = new double[m2 + m2 + 2];
@@ -634,7 +632,7 @@ public class Vocoder {
         movem(freqt_buff, g, c2, c2pos, m2 + 1);
     }
 
-    private void c2ir(final double[] c, int cpos, final int nc, double[] h, int hpos, final int leng) {
+    private void c2ir(double[] c, int cpos, int nc, double[] h, int hpos, int leng) {
         h[hpos + 0] = Math.exp(c[cpos + 0]);
 
         for (int n = 1; n < leng; n++) {
@@ -646,7 +644,7 @@ public class Vocoder {
         }
     }
 
-    private double b2en(final double[] b, int bpos, final int m, final double a) {
+    private double b2en(double[] b, int bpos, int m, double a) {
         double en = 0.0;
 
         if (spectrum2en_size < m) {
@@ -667,7 +665,7 @@ public class Vocoder {
         return en;
     }
 
-    private void ignorm(double[] c1, int c1pos, double[] c2, int c2pos, int m, final double g) {
+    private void ignorm(double[] c1, int c1pos, double[] c2, int c2pos, int m, double g) {
         if (g != 0.0) {
             double k = Math.pow(c1[c1pos + 0], g);
             for (; m >= 1; m--)
@@ -679,7 +677,7 @@ public class Vocoder {
         }
     }
 
-    private void gnorm(double[] c1, int c1pos, double[] c2, int c2pos, int m, final double g) {
+    private void gnorm(double[] c1, int c1pos, double[] c2, int c2pos, int m, double g) {
 
         if (g != 0.0) {
             double k = 1.0 + g * c1[c1pos + 0];
@@ -692,8 +690,8 @@ public class Vocoder {
         }
     }
 
-    private void lsp2lpc(double[] lsp, int lpos, double[] a, int apos, final int m) {
-        Boolean flag_odd = false;
+    private void lsp2lpc(double[] lsp, int lpos, double[] a, int apos, int m) {
+        boolean flag_odd = false;
         int mh1, mh2;
 
         if (m % 2 == 0)
@@ -785,7 +783,7 @@ public class Vocoder {
         a[apos + 0] = 1.0;
     }
 
-    private void gc2gc(double[] c1, int c1pos, final int m1, final double g1, double[] c2, int c2pos, final int m2, double g2) {
+    private void gc2gc(double[] c1, int c1pos, int m1, double g1, double[] c2, int c2pos, int m2, double g2) {
 
         if (m1 > gc2gc_size) {
             gc2gc_buff = new double[m1 + 1];
@@ -813,7 +811,7 @@ public class Vocoder {
         }
     }
 
-    private void mgc2mgc(double[] c1, int c1pos, final int m1, final double a1, final double g1, double[] c2, int c2pos, final int m2, final double a2, final double g2) {
+    private void mgc2mgc(double[] c1, int c1pos, int m1, double a1, double g1, double[] c2, int c2pos, int m2, double a2, double g2) {
         double a;
 
         if (a1 == a2) {
@@ -829,7 +827,7 @@ public class Vocoder {
         }
     }
 
-    private void lsp2mgc(double[] lsp, int lpos, double[] mgc, int mpos, final int m, final double alpha) {
+    private void lsp2mgc(double[] lsp, int lpos, double[] mgc, int mpos, int m, double alpha) {
 
         lsp2lpc(lsp, 1, mgc, mpos, m);
         if (use_log_gain)
@@ -851,7 +849,7 @@ public class Vocoder {
                 mgc[mpos + i] *= gamma;
     }
 
-    private double mglsadff(double x, final double[] b, int bpos, final int m, final double a, double[] d, int dpos) {
+    private double mglsadff(double x, double[] b, int bpos, int m, double a, double[] d, int dpos) {
 
         double y = d[dpos + 0] * b[bpos + 1];
         for (int i = 1; i < m; i++) {
@@ -867,7 +865,7 @@ public class Vocoder {
         return x;
     }
 
-    private double mglsadf(double x, double[] b, int bpos, final int m, final double a, final int n, double[] d, int dpos) {
+    private double mglsadf(double x, double[] b, int bpos, int m, double a, int n, double[] d, int dpos) {
         for (int i = 0; i < n; i++)
             x = mglsadff(x, b, bpos, m, a, d, dpos + i * (m + 1));
 
@@ -876,7 +874,7 @@ public class Vocoder {
 
     private void check_lsp_stability(double[] lsp, int lpos, int m) {
         double min = (CHECK_LSP_STABILITY_MIN * PI) / (m + 1);
-        Boolean find;
+        boolean find;
 
         for (int i = 0; i < CHECK_LSP_STABILITY_NUM; i++) {
             find = false;
@@ -900,7 +898,7 @@ public class Vocoder {
                 find = true;
             }
 
-            if (find == false)
+            if (!find)
                 break;
         }
     }

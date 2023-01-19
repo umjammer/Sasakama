@@ -35,9 +35,9 @@
 package org.icn.sasakama;
 
 public class Constant {
-    //static final int MAXBUFLEN = 1024;
-    static final Boolean WORDS_LITTLEENDIAN = false;
-    static final Boolean WORDS_BIGENDIAN = false;
+//    static final int MAXBUFLEN = 1024;
+    static final boolean WORDS_LITTLEENDIAN = false;
+    static final boolean WORDS_BIGENDIAN = false;
     static final double TIME_CONSTANT = 1.0e+07;
     static final double MAX_F0 = 20000.0;
     static final double MIN_F0 = 20.0;

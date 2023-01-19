@@ -42,5 +42,4 @@ public class GStream {
         this.vector_length = vector_length;
         par = new double[total_frame][vector_length];
     }
-
 }

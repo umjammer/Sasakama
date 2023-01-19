@@ -53,7 +53,7 @@ public class Window {
         max_width = win.max_width;
         l_width = new int[win.l_width.length];
         r_width = new int[win.r_width.length];
-        coefficient = new ArrayList<double[]>();
+        coefficient = new ArrayList<>();
 
         for (int i = 0; i < l_width.length; i++)
             l_width[i] = win.l_width[i];
@@ -90,7 +90,7 @@ public class Window {
         initialize();
     }
 
-    public Boolean load(File[] hf) {
+    public boolean load(File[] hf) {
         int size = hf.length;
 
         if (hf == null || size == 0)
@@ -99,14 +99,14 @@ public class Window {
         this.size = size;
         l_width = new int[size];
         r_width = new int[size];
-        coefficient = new ArrayList<double[]>();
+        coefficient = new ArrayList<>();
 
         int fsize;
-        Boolean result = true;
+        boolean result = true;
 
         for (int i = 0; i < size; i++) {
             StringBuffer buff = new StringBuffer();
-            if (hf[i].get_pattern_token(buff) == false) {
+            if (!hf[i].get_pattern_token(buff)) {
                 result = false;
                 fsize = 1;
             } else {
@@ -118,7 +118,7 @@ public class Window {
             }
             double[] dd = new double[fsize];
             for (int j = 0; j < fsize; j++) {
-                if (hf[i].get_token(buff) == false) {
+                if (!hf[i].get_token(buff)) {
                     result = false;
                     dd[j] = 0.0;
                 } else {
@@ -142,7 +142,7 @@ public class Window {
                 max_width = Math.abs(r_width[i]);
         }
 
-        if (result == false) {
+        if (!result) {
             clear();
             return false;
         }

@@ -49,8 +49,8 @@ public class PStreamSet {
         total_frame = 0;
     }
 
-    public Boolean create(SStreamSet sss, double[] msd_threshold, double[] gv_weight) {
-        Boolean not_bound = false;
+    public boolean create(SStreamSet sss, double[] msd_threshold, double[] gv_weight) {
+        boolean not_bound;
 
         if (nstream != 0) {
             Misc.error("PStreamSet.create: PStreamSet should be clear.");
@@ -70,7 +70,7 @@ public class PStreamSet {
                     if (sss.get_msd(i, state) > msd_threshold[i])
                         pst.length += sss.get_duration(state);
 
-                pst.msd_flag = new Boolean[total_frame];
+                pst.msd_flag = new boolean[total_frame];
                 for (int state = 0, frame = 0; state < sss.get_total_state(); state++)
                     if (sss.get_msd(i, state) > msd_threshold[i])
                         for (int j = 0; j < sss.get_duration(state); j++) {
@@ -98,7 +98,7 @@ public class PStreamSet {
                 pst.gv = new Gv();
                 pst.gv.mean = new double[pst.vector_length];
                 pst.gv.vari = new double[pst.vector_length];
-                pst.gv.gv_switch = new Boolean[pst.length];
+                pst.gv.gv_switch = new boolean[pst.length];
                 for (int j = 0; j < pst.vector_length; j++) {
                     pst.gv.mean[j] = sss.get_gv_mean(i, j) * gv_weight[i];
                     pst.gv.vari[j] = sss.get_gv_vari(i, j);
@@ -110,8 +110,8 @@ public class PStreamSet {
                         for (int j = 0; j < sss.get_duration(state); j++, frame++)
                             if (pst.msd_flag[frame]) {
                                 pst.gv.gv_switch[msd_frame++] = sss.get_gv_switch(i, state);
-                                //                  System.err.printf("sss.get_gv_switch: (%d, %d):%s\n",
-                                //              		  i, state, sss.get_gv_switch(i, state)?"true":"false");
+//                                System.err.printf("sss.get_gv_switch: (%d, %d):%s\n",
+//                                        i, state, sss.get_gv_switch(i, state) ? "true" : "false");
                             }
                 } else {
                     /* for non MSD */
@@ -119,8 +119,8 @@ public class PStreamSet {
                     for (int state = 0; state < sss.get_total_state(); state++)
                         for (int j = 0; j < sss.get_duration(state); j++) {
                             pst.gv.gv_switch[frame++] = sss.get_gv_switch(i, state);
-                            //          System.err.printf("sss.get_gv_switch: (%d, %d):%s\n",
-                            //    		  i, state, sss.get_gv_switch(i, state)?"true":"false");
+//                            System.err.printf("sss.get_gv_switch: (%d, %d):%s\n",
+//                                    i, state, sss.get_gv_switch(i, state) ? "true" : "false");
                         }
                 }
 
@@ -142,7 +142,7 @@ public class PStreamSet {
                 pst.par = new double[pst.length][pst.vector_length];
             }
 
-            /* copy pdf */
+            // copy pdf
             if (sss.is_msd(i)) {
                 int frame = 0;
                 int msd_frame = 0;
@@ -150,7 +150,7 @@ public class PStreamSet {
                 for (int state = 0; state < sss.get_total_state(); state++) {
                     for (int j = 0; j < sss.get_duration(state); j++) {
                         if (pst.msd_flag[frame]) {
-                            /* check current frames is MSD boundary or not */
+                            // check current frames is MSD boundary or not
                             for (int k = 0; k < pst.win.size; k++) {
                                 not_bound = true;
                                 for (int shift = pst.win.l_width[k]; shift <= pst.win.r_width[k]; shift++)
@@ -163,13 +163,12 @@ public class PStreamSet {
                                 for (int l = 0; l < pst.vector_length; l++) {
                                     int m = pst.vector_length * k + l;
                                     pst.sm.mean[msd_frame][m] = sss.get_mean(i, state, m);
-                                    //		System.err.printf("sm.mean[%d][%d]:%5.2f\n", msd_frame, m, pst.sm.mean[msd_frame][m]);
+//                                    System.err.printf("sm.mean[%d][%d]:%5.2f\n", msd_frame, m, pst.sm.mean[msd_frame][m]);
                                     if (not_bound || k == 0)
                                         pst.sm.ivar[msd_frame][m] = finv(sss.get_vari(i, state, m));
                                     else
                                         pst.sm.ivar[msd_frame][m] = 0.0;
-                                    //	System.err.printf("sm.ivar[%d][%d]:%5.2f\n", msd_frame, m, pst.sm.ivar[msd_frame][m]);
-
+//                                    System.err.printf("sm.ivar[%d][%d]:%5.2f\n", msd_frame, m, pst.sm.ivar[msd_frame][m]);
                                 }
                             }
                             msd_frame++;
@@ -191,27 +190,26 @@ public class PStreamSet {
                             for (int l = 0; l < pst.vector_length; l++) {
                                 int m = pst.vector_length * k + l;
                                 pst.sm.mean[frame][m] = sss.get_mean(i, state, m);
-                                // System.err.printf("sm.mean[%d][%d]:%5.2f\n", frame, m, pst.sm.mean[frame][m]);
+//                                 System.err.printf("sm.mean[%d][%d]:%5.2f\n", frame, m, pst.sm.mean[frame][m]);
 
                                 if (not_bound || k == 0)
                                     pst.sm.ivar[frame][m] = finv(sss.get_vari(i, state, m));
                                 else
                                     pst.sm.ivar[frame][m] = 0;
-                                // System.err.printf("sm.ivar[%d][%d]:%5.2f\n", frame, m, pst.sm.ivar[frame][m]);
-
+//                                System.err.printf("sm.ivar[%d][%d]:%5.2f\n", frame, m, pst.sm.ivar[frame][m]);
                             }
                         }
                         frame++;
                     }
                 }
             }
-            /* parameter generation */
+            // parameter generation
             pst.mlpg();
         }
         return true;
     }
 
-    private double finv(final double x) {
+    private double finv(double x) {
         if (x >= Constant.INFTY2)
             return 0.0;
         if (x <= -Constant.INFTY2)
@@ -244,11 +242,11 @@ public class PStreamSet {
         return pstream[stream_index].par[frame_index];
     }
 
-    public Boolean get_msd_flag(int stream_index, int frame_index) {
+    public boolean get_msd_flag(int stream_index, int frame_index) {
         return pstream[stream_index].msd_flag[frame_index];
     }
 
-    public Boolean is_msd(int stream_index) {
+    public boolean is_msd(int stream_index) {
         return pstream[stream_index].msd_flag != null ? true : false;
     }
 

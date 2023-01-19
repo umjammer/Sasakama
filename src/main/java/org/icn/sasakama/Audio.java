@@ -50,8 +50,8 @@ public class Audio extends Thread {
     private AudioFormat format;
     private byte[] playBuffer;
 
-    Boolean flag_play;
-    Boolean active;
+    boolean flag_play;
+    boolean active;
 
     Audio() {
         initialize();
@@ -72,7 +72,7 @@ public class Audio extends Thread {
 
         // sampleRate, sampleSizeInBits, channels, signed?, bigendian?
         format = new AudioFormat((float) sampleRate, sampleSizeInBits, channels, true, true);
-        //System.err.println(format.toString());
+//        System.err.println(format.toString());
 
         buffer = ByteBuffer.allocate((Short.SIZE / Byte.SIZE) * max_buff_size);
     }
@@ -97,7 +97,7 @@ public class Audio extends Thread {
                 do {
                     int nwrite = source.write(playBuffer, pos, playBuffer.length - pos);
                     pos += nwrite;
-                    //System.err.printf("play!");
+//                    System.err.printf("play!");
                 } while (pos < playBuffer.length);
                 flag_play = false;
             } else {
@@ -123,12 +123,10 @@ public class Audio extends Thread {
     public void write(short data) {
         buffer.putShort(data);
 
-        if (buffer.hasRemaining() == false) {
+        if (!buffer.hasRemaining()) {
             byte[] temp_src = buffer.array();
             byte[] temp_buf = new byte[temp_src.length];
-            for (int i = 0; i < temp_buf.length; i++) {
-                temp_buf[i] = temp_src[i];
-            }
+            System.arraycopy(temp_src, 0, temp_buf, 0, temp_buf.length);
             waitPlayEnd();
             playBuffer = temp_buf;
             flag_play = true;
@@ -136,7 +134,7 @@ public class Audio extends Thread {
         }
     }
 
-    public Boolean isActive() {
+    public boolean isActive() {
         return active;
     }
 
@@ -152,9 +150,7 @@ public class Audio extends Thread {
         if (buffer.position() != 0) {
             byte[] temp_src = buffer.array();
             byte[] temp_buf = new byte[buffer.position()];
-            for (int i = 0; i < temp_buf.length; i++) {
-                temp_buf[i] = temp_src[i];
-            }
+            System.arraycopy(temp_src, 0, temp_buf, 0, temp_buf.length);
             waitPlayEnd();
             playBuffer = temp_buf;
             flag_play = true;

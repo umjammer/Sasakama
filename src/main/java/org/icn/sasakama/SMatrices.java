@@ -54,13 +54,13 @@ public class SMatrices {
     }
 
     public void print() {
-        System.err.printf("*** SMatrices begin ***\n");
+        System.err.print("*** SMatrices begin ***\n");
         print_mean();
         print_ivar();
         print_g();
         print_wuw();
         print_wum();
-        System.err.printf("*** SMatrices end ***\n");
+        System.err.print("*** SMatrices end ***\n");
     }
 
     public void print_mean() {

@@ -59,9 +59,9 @@ public class ModelSet {
     /* for internal use */
     private String gv_off_context_string;
     private int[] vector_length;
-    private Boolean[] is_msd;
+    private boolean[] is_msd;
     private int[] num_windows;
-    private Boolean[] use_gv;
+    private boolean[] use_gv;
     private String duration_pdf;
     private String duration_tree;
     private ArrayList<String[]> stream_win;
@@ -106,7 +106,7 @@ public class ModelSet {
         initialize();
     }
 
-    private Boolean load_global_info(File hf, int i) {
+    private boolean load_global_info(File hf, int i) {
 		/*
 		[GLOBAL]
 		HTS_VOICE_VERSION:1.0
@@ -121,8 +121,8 @@ public class ModelSet {
 		COMMENT:
 		 */
         String separator = ":";
-        String buffer = null;
-        Boolean error = false;
+        String buffer;
+        boolean error = false;
 
         String temp_hts_voice_version = null;
         int temp_sampling_frequency = 0;
@@ -136,14 +136,14 @@ public class ModelSet {
 
         buffer = hf.readLine();
         //System.err.printf("line:[%s]\n", buffer);
-        if (Misc.strequal(buffer, "[GLOBAL]") != true) {
+        if (!Misc.strequal(buffer, "[GLOBAL]")) {
             error = true;
         }
-        while (error == false) {
+        while (!error) {
             int fpos = hf.ftell();
             buffer = hf.readLine();
             //System.err.printf("line:[%s]\n", buffer);
-            if (Misc.strequal(buffer, "[STREAM]") == true) {
+            if (Misc.strequal(buffer, "[STREAM]")) {
                 hf.fseek(fpos, File.SEEK_SET);
                 break;
             }
@@ -187,7 +187,7 @@ public class ModelSet {
                 error = true;
             }
         }
-        if (error == false)
+        if (!error)
             if (i == 0) {
                 hts_voice_version = temp_hts_voice_version;
                 sampling_frequency = temp_sampling_frequency;
@@ -201,7 +201,7 @@ public class ModelSet {
                 if (num_streams != stream_type.split(",").length)
                     error = true;
             } else {
-                if (Misc.strequal(hts_voice_version, temp_hts_voice_version) != true)
+                if (!Misc.strequal(hts_voice_version, temp_hts_voice_version))
                     error = true;
                 if (sampling_frequency != temp_sampling_frequency)
                     error = true;
@@ -213,20 +213,20 @@ public class ModelSet {
                     error = true;
                 if (num_streams != temp_stream_type.split(",").length)
                     error = true;
-                if (Misc.strequal(stream_type, temp_stream_type) != true)
+                if (!Misc.strequal(stream_type, temp_stream_type))
                     error = true;
-                if (Misc.strequal(fullcontext_format, temp_fullcontext_format) != true)
+                if (!Misc.strequal(fullcontext_format, temp_fullcontext_format))
                     error = true;
-                if (Misc.strequal(fullcontext_version, temp_fullcontext_version) != true)
+                if (!Misc.strequal(fullcontext_version, temp_fullcontext_version))
                     error = true;
-                if (Misc.strequal(gv_off_context_string, temp_gv_off_context_string) != true)
+                if (!Misc.strequal(gv_off_context_string, temp_gv_off_context_string))
                     error = true;
             }
 
         return !error;
     }
 
-    private Boolean load_stream_info(File hf, int i) {
+    private boolean load_stream_info(File hf, int i) {
 		/*
 		[STREAM]
 		VECTOR_LENGTH[MCP]:25
@@ -245,29 +245,29 @@ public class ModelSet {
 		OPTION[LF0]:
 		OPTION[LPF]:
 		 */
-        String buffer = null;
-        Boolean error = false;
+        String buffer;
+        boolean error = false;
 
         buffer = hf.readLine();
         //System.err.println(buffer);
 
-        if (Misc.strequal(buffer, "[STREAM]") != true) {
+        if (!Misc.strequal(buffer, "[STREAM]")) {
             error = true;
         }
 
         int[] temp_vector_length = new int[num_streams];
-        Boolean[] temp_is_msd = new Boolean[num_streams];
+        boolean[] temp_is_msd = new boolean[num_streams];
         int[] temp_num_windows = new int[num_streams];
-        Boolean[] temp_use_gv = new Boolean[num_streams];
+        boolean[] temp_use_gv = new boolean[num_streams];
         String[] temp_option = new String[num_streams];
         Pattern p = Pattern.compile("^(.+)\\[([^\\]]+)\\]:(.*)$");
 
         String[] stream_type_list = stream_type.split(",");
 
-        while (error == false) {
+        while (!error) {
             int fpos = hf.ftell();
             buffer = hf.readLine();
-            if (buffer.equals("[POSITION]") == true) {
+            if (buffer.equals("[POSITION]")) {
                 hf.fseek(fpos, File.SEEK_SET);
                 break;
             }
@@ -324,7 +324,7 @@ public class ModelSet {
                 break;
             }
         }
-        if (error == false) {
+        if (!error) {
             if (i == 0) {
                 vector_length = temp_vector_length;
                 is_msd = temp_is_msd;
@@ -360,7 +360,7 @@ public class ModelSet {
         return (!error);
     }
 
-    private Boolean load_position_info(File hf) {
+    private boolean load_position_info(File hf) {
 		/*
 		[POSITION]
 		DURATION_PDF:0-1163
@@ -375,12 +375,12 @@ public class ModelSet {
 		STREAM_TREE[LF0]:402231-513885
 		STREAM_TREE[LPF]:513886-513990
 		 */
-        String buffer = null;
-        Boolean error = false;
+        String buffer;
+        boolean error = false;
 
         String temp_duration_pdf = null;
         String temp_duration_tree = null;
-        ArrayList<String[]> temp_stream_win = new ArrayList<String[]>();
+        ArrayList<String[]> temp_stream_win = new ArrayList<>();
         for (int j = 0; j < num_streams; j++) {
             String[] dd = new String[num_windows[j]];
             temp_stream_win.add(dd);
@@ -396,20 +396,20 @@ public class ModelSet {
         Pattern p2 = Pattern.compile("^([^\\[]+)\\[(.+)\\]:(.+)$");
 
         buffer = hf.readLine();
-        if (Misc.strequal(buffer, "[POSITION]") != true) {
+        if (!Misc.strequal(buffer, "[POSITION]")) {
             error = true;
         }
 
-        while (error == false) {
+        while (!error) {
             int fpos = hf.ftell();
             buffer = hf.readLine();
 
-            if (buffer.equals("[DATA]") == true) {
+            if (buffer.equals("[DATA]")) {
                 hf.fseek(fpos, File.SEEK_SET);
                 break;
             }
 
-            String str1 = null, str2 = null, str3 = null;
+            String str1, str2, str3 = null;
             Matcher m1 = p1.matcher(buffer);
             Matcher m2 = p2.matcher(buffer);
             if (m1.find()) {
@@ -498,53 +498,51 @@ public class ModelSet {
             }
         }
 
-        if (error == false) {
+        if (!error) {
             duration_pdf = temp_duration_pdf;
             duration_tree = temp_duration_tree;
             stream_win = temp_stream_win;
             stream_pdf = temp_stream_pdf;
             stream_tree = temp_stream_tree;
             gv_pdf = temp_gv_pdf;
-			/*
-			for(int kk=0;kk < gv_pdf.length;kk++)
-				System.err.printf("gv_pdf[%d]:%s\n", kk, gv_pdf[kk]);
-				*/
+//            for (int kk = 0; kk < gv_pdf.length; kk++)
+//                System.err.printf("gv_pdf[%d]:%s\n", kk, gv_pdf[kk]);
             gv_tree = temp_gv_tree;
         }
 
         return (!error);
     }
 
-    private Boolean load_data_info(File hf, int i) {
-        String buffer = null;
+    private boolean load_data_info(File hf, int i) {
+        String buffer;
         //System.err.printf("i:%d\n", i);
 
         buffer = hf.readLine();
-        if (Misc.strequal(buffer, "[DATA]") != true) {
+        if (!Misc.strequal(buffer, "[DATA]")) {
             return false;
         }
 
-        if (load_duration(hf, i) != true) {
+        if (!load_duration(hf, i)) {
             Misc.error("error: load_duration");
             return false;
         }
-        if (load_windows(hf) != true) {
+        if (!load_windows(hf)) {
             Misc.error("error: load_window");
             return false;
         }
-        if (load_streams(hf, i) != true) {
+        if (!load_streams(hf, i)) {
             Misc.error("error: load_streams");
             return false;
         }
-        if (load_gv(hf, i) != true) {
+        if (!load_gv(hf, i)) {
             Misc.error("error: load_gv");
             return false;
         }
         return true;
     }
 
-    private Boolean load_duration(File hf, int i) {
-        Boolean error = false;
+    private boolean load_duration(File hf, int i) {
+        boolean error = false;
         int start_of_data = hf.ftell();
 
         /* pdf */
@@ -571,7 +569,7 @@ public class ModelSet {
         hf_tree.read(hf, e - s + 1);
         hf.fseek(start_of_data, File.SEEK_SET);
 
-        if (duration[i].load(hf_pdf, hf_tree, num_states, 1, false) != true)
+        if (!duration[i].load(hf_pdf, hf_tree, num_states, 1, false))
             error = true;
 
         hf_tree.close();
@@ -580,8 +578,8 @@ public class ModelSet {
         return (!error);
     }
 
-    private Boolean load_windows(File hf) {
-        Boolean error = false;
+    private boolean load_windows(File hf) {
+        boolean error = false;
         int start_of_data = hf.ftell();
 
         for (int j = 0; j < num_streams; j++) {
@@ -598,7 +596,7 @@ public class ModelSet {
                 hf.fseek(start_of_data, File.SEEK_SET);
             }
 
-            if (window[j].load(win_fp) != true) {
+            if (!window[j].load(win_fp)) {
                 error = true;
                 break;
             }
@@ -608,8 +606,8 @@ public class ModelSet {
         return (!error);
     }
 
-    private Boolean load_streams(File hf, int i) {
-        Boolean error = false;
+    private boolean load_streams(File hf, int i) {
+        boolean error = false;
         int start_of_data = hf.ftell();
 
         for (int j = 0; j < num_streams; j++) {
@@ -629,7 +627,7 @@ public class ModelSet {
             tree_hf.read(hf, e - s + 1);
             hf.fseek(start_of_data, File.SEEK_SET);
 
-            if (stream[i][j].load(pdf_hf, tree_hf, vector_length[j], num_windows[j], is_msd[j]) != true) {
+            if (!stream[i][j].load(pdf_hf, tree_hf, vector_length[j], num_windows[j], is_msd[j])) {
                 error = true;
                 break;
             }
@@ -639,12 +637,12 @@ public class ModelSet {
         return (!error);
     }
 
-    private Boolean load_gv(File hf, int i) {
-        Boolean error = false;
+    private boolean load_gv(File hf, int i) {
+        boolean error = false;
         int start_of_data = hf.ftell();
 
         for (int j = 0; j < num_streams; j++) {
-            if (use_gv[j] == true) {
+            if (use_gv[j]) {
                 //	System.err.printf("gv_pdf:%s\n", gv_pdf[j]);
                 String[] temp_list_pdf = gv_pdf[j].split("-");
                 int s = Integer.parseInt(temp_list_pdf[0]);
@@ -662,7 +660,7 @@ public class ModelSet {
                 tree_hf.read(hf, e - s + 1);
                 hf.fseek(start_of_data, File.SEEK_SET);
 
-                if (gv[i][j].load(pdf_hf, tree_hf, vector_length[j], 1, false) != true) {
+                if (!gv[i][j].load(pdf_hf, tree_hf, vector_length[j], 1, false)) {
                     error = true;
                     break;
                 }
@@ -673,7 +671,7 @@ public class ModelSet {
         return (!error);
     }
 
-    public Boolean load(String[] voices) {
+    public boolean load(String[] voices) {
         clear();
 
         if (voices == null || voices.length == 0)
@@ -687,11 +685,11 @@ public class ModelSet {
 
         for (int i = 0; i < num_voices; i++) {
             File hf = new File();
-            if (hf.open(voices[i], "r") != true) {
+            if (!hf.open(voices[i], "r")) {
                 Misc.error("fail1");
                 return false;
             }
-            if (load_global_info(hf, i) != true) {
+            if (!load_global_info(hf, i)) {
                 Misc.error("fail2");
                 return false;
             } else {
@@ -709,15 +707,15 @@ public class ModelSet {
                     }
                 }
             }
-            if (load_stream_info(hf, i) != true) {
+            if (!load_stream_info(hf, i)) {
                 Misc.error("fail3");
                 return false;
             }
-            if (load_position_info(hf) != true) {
+            if (!load_position_info(hf)) {
                 Misc.error("fail4");
                 return false;
             }
-            if (load_data_info(hf, i) != true) {
+            if (!load_data_info(hf, i)) {
                 Misc.error("fail5");
                 return false;
             }
@@ -747,10 +745,10 @@ public class ModelSet {
         return option[stream_index];
     }
 
-    public Boolean get_gv_flag(final String string) {
+    public boolean get_gv_flag(String string) {
         if (gv_off_context == null)
             return true;
-        else if (gv_off_context.match(string) == true)
+        else if (gv_off_context.match(string))
             return false;
         else
             return true;
@@ -781,7 +779,7 @@ public class ModelSet {
         return stream[0][stream_index].vector_length;
     }
 
-    public Boolean is_msd(int stream_index) {
+    public boolean is_msd(int stream_index) {
         return stream[0][stream_index].is_msd;
     }
 
@@ -805,11 +803,8 @@ public class ModelSet {
         return window[stream_index].max_width;
     }
 
-    public Boolean use_gv(int stream_index) {
-        if (gv[0][stream_index].vector_length != 0)
-            return true;
-        else
-            return false;
+    public boolean use_gv(int stream_index) {
+        return gv[0][stream_index].vector_length != 0;
     }
 
     public void get_duration_index(int voice_index, String string, int[] tree_index, int[] pdf_index) {
@@ -817,7 +812,7 @@ public class ModelSet {
 
     }
 
-    public void get_duration(String string, final double[] iw, double[] mean, double[] vari, int base) {
+    public void get_duration(String string, double[] iw, double[] mean, double[] vari, int base) {
         for (int i = 0; i < num_states; i++) {
             mean[base + i] = 0.0;
             vari[base + i] = 0.0;
@@ -825,12 +820,9 @@ public class ModelSet {
         for (int i = 0; i < num_voices; i++)
             if (iw[i] != 0.0)
                 duration[i].add_parameter(2, string, mean, vari, null, iw[i], base);
-		/*
-		for(int i=0;i < num_states;i++){
-			System.err.printf("get_duration. mean[%d]:%5.2f vari[%d]:%5.2f\n", i, mean[base+i], i, vari[base+i]);
-			
-		}
-		*/
+//        for (int i = 0; i < num_states; i++) {
+//            System.err.printf("get_duration. mean[%d]:%5.2f vari[%d]:%5.2f\n", i, mean[base + i], i, vari[base + i]);
+//        }
     }
 
 
@@ -838,7 +830,7 @@ public class ModelSet {
         stream[voice_index][stream_index].get_index(state_index, string, tree_index, pdf_index);
     }
 
-    public void get_parameter(int stream_index, int state_index, String string, final double[][] iw, double[] mean, double[] vari, double[] msd) {
+    public void get_parameter(int stream_index, int state_index, String string, double[][] iw, double[] mean, double[] vari, double[] msd) {
         int len = stream[0][stream_index].vector_length * stream[0][stream_index].num_windows;
 
         for (int i = 0; i < len; i++) {
@@ -854,11 +846,11 @@ public class ModelSet {
         }
     }
 
-    public void get_gv_index(int voice_index, int stream_index, final String string, int[] tree_index, int[] pdf_index) {
+    public void get_gv_index(int voice_index, int stream_index, String string, int[] tree_index, int[] pdf_index) {
         gv[voice_index][stream_index].get_index(2, string, tree_index, pdf_index);
     }
 
-    public void get_gv(int stream_index, final String string, final double[][] iw, double[] mean, double[] vari) {
+    public void get_gv(int stream_index, String string, double[][] iw, double[] mean, double[] vari) {
         int len = stream[0][stream_index].vector_length;
 
         for (int i = 0; i < len; i++) {

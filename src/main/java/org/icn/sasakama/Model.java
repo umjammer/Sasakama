@@ -40,7 +40,7 @@ import java.util.ArrayList;
 public class Model {
     int vector_length;
     int num_windows;
-    Boolean is_msd;
+    boolean is_msd;
     int ntree;
     int[] npdf;
     ArrayList<ArrayList<float[]>> pdf;
@@ -70,7 +70,7 @@ public class Model {
         initialize();
     }
 
-    public Boolean load_tree(File hf) {
+    public boolean load_tree(File hf) {
         if (hf == null) {
             ntree = 1;
             return true;
@@ -79,13 +79,13 @@ public class Model {
         ntree = 0;
         Question last_question = null;
         Tree last_tree = null;
-        while (hf.feof() == false) {
+        while (!hf.feof()) {
             StringBuffer buff = new StringBuffer();
             hf.get_pattern_token(buff);
             //System.err.printf("buff:%s\n", buff.toString());
             if (buff.toString().startsWith("QS")) {
                 Question q = new Question();
-                if (q.load(hf) == false) {
+                if (!q.load(hf)) {
                     q.clear();
                     clear();
                     return false;
@@ -105,7 +105,7 @@ public class Model {
                 Tree tr = new Tree();
                 tr.state = state;
                 tr.parse_pattern(buff.toString());
-                if (tr.load(hf, question) == false) {
+                if (!tr.load(hf, question)) {
                     tr.clear();
                     clear();
                     return false;
@@ -126,18 +126,16 @@ public class Model {
         return true;
     }
 
-    public Boolean load_pdf(File hf, int vector_length, int num_windows, Boolean is_msd) {
-        Boolean result = true;
+    public boolean load_pdf(File hf, int vector_length, int num_windows, boolean is_msd) {
+        boolean result = true;
 
         if (hf == null || ntree <= 0) {
             Misc.error("HTS_Model.load_pdf: File for pdfs is not specified.");
             return false;
         }
-		/*
-		System.err.println("vector_length:"+Integer.toString(vector_length));
-		System.err.println("num_windows:"+Integer.toString(num_windows));
-		System.err.println("ntree:"+Integer.toString(ntree));
-		*/
+//        System.err.println("vector_length:" + Integer.toString(vector_length));
+//        System.err.println("num_windows:" + Integer.toString(num_windows));
+//        System.err.println("ntree:" + Integer.toString(ntree));
 
         this.vector_length = vector_length;
         this.num_windows = num_windows;
@@ -154,23 +152,23 @@ public class Model {
             }
 
             npdf[j] = buf[0];
-            //System.err.println("npdf["+Integer.toString(j)+"]:"+Integer.toString(npdf[j]));
+//            System.err.println("npdf[" + Integer.toString(j) + "]:" + Integer.toString(npdf[j]));
         }
 
         for (int j = 2; j <= ntree + 1; j++) {
             if (npdf[j] <= 0) {
-                Misc.error("HTS_Model.load_pdf: # of pdfs at " + String.valueOf(j) + "-th state should be positive.");
+                Misc.error("HTS_Model.load_pdf: # of pdfs at " + j + "-th state should be positive.");
                 result = false;
                 break;
             }
 
         }
-        if (result == false) {
+        if (!result) {
             npdf = null;
             initialize();
             return false;
         }
-        pdf = new ArrayList<ArrayList<float[]>>();
+        pdf = new ArrayList<>();
         int len = 0;
         if (is_msd)
             len = vector_length * num_windows * 2 + 1;
@@ -181,39 +179,39 @@ public class Model {
             pdf.add(null);
         }
         for (int j = 2; j <= ntree + 1; j++) {
-            ArrayList<float[]> tmplist = new ArrayList<float[]>();
+            ArrayList<float[]> tmplist = new ArrayList<>();
             tmplist.add(null);
-            //	System.err.println("npdf:"+Integer.toString(npdf[j]));
+//            System.err.println("npdf:" + Integer.toString(npdf[j]));
             for (int k = 1; k <= npdf[j]; k++) {
                 float[] dd = new float[len];
                 int cnt = hf.fread(dd);
                 if (cnt != len) {
-                    //System.err.printf("cnt:%d, len:%d\n", cnt, len);
+//                    System.err.printf("cnt:%d, len:%d\n", cnt, len);
                     result = false;
                 }
                 tmplist.add(dd);
             }
             pdf.add(tmplist);
         }
-        if (result == false) {
+        if (!result) {
             clear();
             return false;
         }
         return true;
     }
 
-    public Boolean load(File pdf, File tree, int vector_length, int num_windows, Boolean is_msd) {
+    public boolean load(File pdf, File tree, int vector_length, int num_windows, boolean is_msd) {
         if (pdf == null || vector_length == 0 || num_windows == 0)
             return false;
 
         clear();
 
-        if (load_tree(tree) != true) {
+        if (!load_tree(tree)) {
             clear();
             return false;
         }
 
-        if (load_pdf(pdf, vector_length, num_windows, is_msd) != true) {
+        if (!load_pdf(pdf, vector_length, num_windows, is_msd)) {
             clear();
             return false;
         }
@@ -221,7 +219,7 @@ public class Model {
         return true;
     }
 
-    public void get_index(int state_index, final String string, int[] tree_index, int[] pdf_index) {
+    public void get_index(int state_index, String string, int[] tree_index, int[] pdf_index) {
         Tree tr = null;
 
         tree_index[0] = 2;
@@ -230,8 +228,8 @@ public class Model {
         if (tree == null)
             return;
 
-        //System.err.printf("get_index: %s\n", string);
-        Boolean find = false;
+//        System.err.printf("get_index: %s\n", string);
+        boolean find = false;
         for (tr = tree; tr != null; tr = tr.next) {
             if (tr.state == state_index) {
                 Pattern pattern = tr.head;
@@ -239,11 +237,11 @@ public class Model {
                     find = true;
                 for (; pattern != null; pattern = pattern.next)
                     if (Misc.pattern_match(string, pattern.string)) {
-                        //System.err.printf("get_index: find!!, string:%s pattern:%s\n", string, pattern.string);
+//                        System.err.printf("get_index: find!!, string:%s pattern:%s\n", string, pattern.string);
                         find = true;
                         break;
                     }
-                if (find == true)
+                if (find)
                     break;
             }
             tree_index[0]++;
@@ -254,7 +252,7 @@ public class Model {
         else
             pdf_index[0] = tree.search_node(string);
 
-        //System.err.printf("tree_index:%d, pdf_index:%d\n", tree_index[0], pdf_index[0]);
+//        System.err.printf("tree_index:%d, pdf_index:%d\n", tree_index[0], pdf_index[0]);
     }
 
     public float get_pdf(int i, int j, int k) {
@@ -269,15 +267,15 @@ public class Model {
 
         get_index(state_index, string, tree_index, pdf_index);
         for (int i = 0; i < len; i++) {
-            //System.err.printf("i:%d j:%d k:%d\n", tree_index[0], pdf_index[0], i);
+//            System.err.printf("i:%d j:%d k:%d\n", tree_index[0], pdf_index[0], i);
             mean[base + i] += weight * get_pdf(tree_index[0], pdf_index[0], i);
             vari[base + i] += weight * get_pdf(tree_index[0], pdf_index[0], i + len);
-			/* System.err.printf("mean:%5.2f vari:%5.2f\n", 
-						get_pdf(tree_index[0], pdf_index[0], i),
-						get_pdf(tree_index[0], pdf_index[0], i+len) 
-						);*/
+//            System.err.printf("mean:%5.2f vari:%5.2f\n",
+//                    get_pdf(tree_index[0], pdf_index[0], i),
+//                    get_pdf(tree_index[0], pdf_index[0], i + len)
+//            );
         }
-        if (msd != null && is_msd == true)
+        if (msd != null && is_msd)
             msd[0] += weight * get_pdf(tree_index[0], pdf_index[0], len + len);
     }
 }

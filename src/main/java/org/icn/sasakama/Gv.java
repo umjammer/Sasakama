@@ -38,7 +38,7 @@ public class Gv {
     int length;
     double[] mean;
     double[] vari;
-    Boolean[] gv_switch;
+    boolean[] gv_switch;
 
     Gv() {
         length = 0;
@@ -51,7 +51,7 @@ public class Gv {
         length = gv.length;
         mean = new double[gv.mean.length];
         vari = new double[gv.vari.length];
-        gv_switch = new Boolean[gv.gv_switch.length];
+        gv_switch = new boolean[gv.gv_switch.length];
 
         for (int i = 0; i < mean.length; i++)
             mean[i] = gv.mean[i];

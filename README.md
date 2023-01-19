@@ -1,8 +1,8 @@
 [![Release](https://jitpack.io/v/umjammer/Sasakama.svg)](https://jitpack.io/#umjammer/Sasakama)
 [![Java CI](https://github.com/umjammer/Sasakama/actions/workflows/maven.yml/badge.svg)](https://github.com/umjammer/Sasakama/actions/workflows/maven.yml)
-[![CodeQL](https://github.com/umjammer/Sasakama/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/umjammer/Sasakama/actions/workflows/codeql-analysis.yml)
+[![CodeQL](https://github.com/umjammer/Sasakama/actions/workflows/codeql.yml/badge.svg)](https://github.com/umjammer/Sasakama/actions/workflows/codeql.yml)
 ![Java](https://img.shields.io/badge/Java-8-b07219)
-[![Parent](https://img.shields.io/badge/Parent-vavi--speech-pink)](https://github.com/umjammer/vavi-speech)
+[![Parent](https://img.shields.io/badge/Parent-Gyutan-pink)](https://github.com/umjammer/Gyutan)
 
 ## Sasakama
 

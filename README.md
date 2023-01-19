@@ -4,13 +4,28 @@
 ![Java](https://img.shields.io/badge/Java-8-b07219)
 [![Parent](https://img.shields.io/badge/Parent-vavi--speech-pink)](https://github.com/umjammer/vavi-speech)
 
+## Sasakama
+
+<img src="https://user-images.githubusercontent.com/493908/213544604-8ab14094-d8b3-4ab4-9867-c64739b1a14e.jpg" width="160"/>
+
 mavenized Sasakama
 
 ## Install
 
+ * [maven](https://jitpack.io/#umjammer/Sasakama)
+
 ## Usage
 
+ * wip
+
 ## TODO
+
+ * ~~unit test~~
+ * more library friendly
+
+## References
+
+ * [label samples](https://github.com/r9y9/jsut-lab)
 
 ---
 [Original](https://github.com/icn-lab/Sasakama)

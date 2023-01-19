@@ -43,12 +43,12 @@ import java.util.List;
 
 
 public class File {
-    static final int SEEK_SET = 0, SEEK_CUR = 1, SEEK_END = 2;
-    static final int EOF = -1;
-    String filename;
-    ByteOrder byte_order;
-    byte[] buffer;
-    int position;
+    public static final int SEEK_SET = 0, SEEK_CUR = 1, SEEK_END = 2;
+    private static final int EOF = -1;
+    private String filename;
+    private ByteOrder byte_order;
+    private byte[] buffer;
+    private int position;
 
     public File() {
         filename = null;
@@ -262,7 +262,7 @@ public class File {
 
     public boolean get_pattern_token(StringBuffer sb) {
         sb.delete(0, sb.length());
-        ArrayList<Byte> buff = new ArrayList<>();
+        List<Byte> buff = new ArrayList<>();
         boolean squote = false, dquote = false;
 
         if (feof())
@@ -294,7 +294,7 @@ public class File {
         if (c == ',') {
             byte[] bb = new byte[1];
             bb[0] = c;
-            sb.append(bb);
+            sb.append(bb[0]);
             return true;
         }
 
@@ -360,19 +360,19 @@ public class File {
 //		char[] buff = new char[Constant.MAXBUFLEN];
         if (feof())
             return false;
-        char c = (char) fgetc();
+        int c = fgetc();
         while (c == separator) {
             if (feof())
                 return false;
-            c = (char) fgetc();
+            c = fgetc();
             if (c == EOF)
                 return false;
         }
         while (c != separator) {
-            buff.add(c);
+            buff.add((char) c);
             if (feof())
                 break;
-            c = (char) fgetc();
+            c = fgetc();
             if (c == EOF)
                 break;
         }

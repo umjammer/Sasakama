@@ -156,5 +156,4 @@ public class Window {
 
         return dd[j + length];
     }
-
 }

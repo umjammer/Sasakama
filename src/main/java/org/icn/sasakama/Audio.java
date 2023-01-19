@@ -42,16 +42,20 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
 
+/**
+ * for saving audio data in wav format
+ */
 public class Audio extends Thread {
-    int sampleRate, channels, sampleSizeInBits;
-    ByteBuffer buffer;
+
+    private int sampleRate, channels, sampleSizeInBits;
+    private ByteBuffer buffer;
 
     private SourceDataLine source;
     private AudioFormat format;
     private byte[] playBuffer;
 
-    boolean flag_play;
-    boolean active;
+    private boolean flag_play;
+    private boolean active;
 
     Audio() {
         initialize();

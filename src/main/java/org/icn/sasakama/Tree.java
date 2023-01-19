@@ -107,7 +107,7 @@ public class Tree {
             clear();
             return false;
         }
-        //System.err.printf("tree load pat:%s\n", sb.toString());
+//        System.err.printf("tree load pat:%s\n", sb.toString());
         Node node, last_node;
         node = new Node();
         root = last_node = node;
@@ -115,7 +115,7 @@ public class Tree {
         if (sb.charAt(0) == '{') {
             sb = new StringBuffer();
             while (hf.get_pattern_token(sb) && sb.charAt(0) != '}') {
-                //	System.err.printf("tree_load buff1:%s\n", sb.toString());
+//                System.err.printf("tree_load buff1:%s\n", sb.toString());
                 node = last_node.find(Integer.parseInt(sb.toString()));
                 if (node == null) {
                     Misc.error("Tree.load: Cannot find node " + sb);
@@ -127,7 +127,7 @@ public class Tree {
                     clear();
                     return false;
                 }
-                //System.err.printf("tree_load buff2:%s\n", sb.toString());
+//                System.err.printf("tree_load buff2:%s\n", sb.toString());
                 node.quest = question.find(sb.toString());
                 if (node.quest == null) {
                     Misc.error("Tree.load: Cannot find question " + sb);
@@ -145,12 +145,12 @@ public class Tree {
                     clear();
                     return false;
                 }
-                //System.err.printf("tree_load buff3:%s\n", sb.toString());
+//                System.err.printf("tree_load buff3:%s\n", sb.toString());
                 if (Misc.is_num(sb.toString()))
                     node.no.index = Integer.parseInt(sb.toString());
                 else {
                     node.no.pdf = Misc.name2num(sb.toString());
-                    //System.err.printf("name2num: no, buff:%s num:%d\n", sb.toString(), node.no.pdf);
+//                    System.err.printf("name2num: no, buff:%s num:%d\n", sb.toString(), node.no.pdf);
                 }
                 node.no.next = last_node;
                 last_node = node.no;

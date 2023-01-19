@@ -50,6 +50,7 @@ import javax.sound.sampled.AudioSystem;
 
 
 public class Engine {
+
     Condition condition;
     Audio audio;
     ModelSet ms;
@@ -65,27 +66,27 @@ public class Engine {
     public void initialize() {
         condition = new Condition();
 
-        /* global */
+        // global
         condition.sampling_frequency = 0;
         condition.fperiod = 0;
         condition.audio_buff_size = 0;
         condition.stop = false;
         condition.volume = 1.0;
 
-        /* duration */
+        // duration
         condition.speed = 1.0;
         condition.phoneme_alignment_flag = false;
 
-        /* spectrum */
+        // spectrum
         condition.stage = 0;
         condition.use_log_gain = false;
         condition.alpha = 0.0;
         condition.beta = 0.0;
 
-        /* log F0 */
+        // log F0
         condition.additional_half_tone = 0.0;
 
-        /* initialize audio */
+        // initialize audio
         audio = new Audio();
         ms = new ModelSet();
         label = new Label();
@@ -96,7 +97,7 @@ public class Engine {
 
     public boolean load(String[] voices) {
 
-        /* reset engine */
+        // reset engine
         clear();
 
         if (!ms.load(voices)) {
@@ -107,7 +108,7 @@ public class Engine {
         int nstream = ms.get_nstream();
         double average_weight = 1.0 / voices.length;
 
-        /* global */
+        // global
         condition.sampling_frequency = ms.get_sampling_frequency();
         condition.fperiod = ms.get_fperiod();
         condition.msd_threshold = new double[nstream];
@@ -118,7 +119,7 @@ public class Engine {
             condition.gv_weight[i] = 1.0;
         }
 
-        /* spectrum */
+        // spectrum
         String option = ms.get_option(0);
 
         String regex = "GAMMA=(-?\\d+\\.?\\d+)";
@@ -141,7 +142,7 @@ public class Engine {
         if (m.find())
             condition.alpha = Double.parseDouble(m.group(1));
 
-        /* interpolation weights */
+        // interpolation weights
         condition.duration_iw = new double[voices.length];
         for (int i = 0; i < voices.length; i++)
             condition.duration_iw[i] = average_weight;
@@ -406,10 +407,12 @@ public class Engine {
         return true;
     }
 
+    /**
+     * @param fn text filename for speech
+     */
     public boolean synthesize_from_fn(String fn) {
         label.load_from_fn(condition.sampling_frequency, condition.fperiod, fn);
         return synthesize();
-
     }
 
     public boolean synthesize_from_strings(String[] lines) {

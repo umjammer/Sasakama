@@ -34,6 +34,11 @@
 
 package org.icn.sasakama;
 
+import java.util.logging.Level;
+
+import vavi.util.Debug;
+
+
 public class Label {
     LabelString head;
     int size;
@@ -45,7 +50,6 @@ public class Label {
         head = null;
         size = 0;
     }
-
 
     public void check_time() {
         LabelString lstring = head;
@@ -78,13 +82,13 @@ public class Label {
             return;
         }
 
-        /* parse label file */
+        // parse label file
         while (true) {
             StringBuffer buff = new StringBuffer();
             hf.get_token(buff);
-            //System.err.printf("str:[%s]\n", buff.toString());
             if (!Misc.is_graph(buff.toString()))
                 break;
+            Debug.printf(Level.FINER, "str:[%s]", buff);
             size++;
 
             if (lstring != null) {
@@ -97,10 +101,10 @@ public class Label {
             if (Misc.is_num(buff.toString())) {
                 double st = Double.parseDouble(buff.toString());
                 hf.get_token(buff);
-                //System.err.printf("tok1:%s\n", buff);
+                Debug.printf(Level.FINER, "tok1:%s", buff);
                 double ed = Double.parseDouble(buff.toString());
                 hf.get_token(buff);
-                //System.err.printf("tok2:%s\n", buff);
+                Debug.printf(Level.FINER, "tok2:%s", buff);
 
                 lstring.start = rate * st;
                 lstring.end = rate * ed;
@@ -111,7 +115,7 @@ public class Label {
             lstring.next = null;
             lstring.name = buff.toString();
         }
-        //System.err.println("label load break while\n");
+        Debug.printf(Level.FINER, "label load break while");
         check_time();
     }
 
@@ -132,7 +136,7 @@ public class Label {
             return;
         }
 
-        /* copy label */
+        // copy label
         for (String line : lines) {
             if (!Misc.is_graph(line.substring(0, 1)))
                 break;
@@ -145,8 +149,7 @@ public class Label {
                 lstring = new LabelString();
                 head = lstring;
             }
-            int[] data_index = new int[1];
-            data_index[0] = 0;
+            int[] data_index = new int[] {0};
             StringBuffer sb = new StringBuffer();
             if (Misc.is_num(line)) {
                 Misc.get_token_from_string(line, data_index, sb);

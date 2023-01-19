@@ -55,7 +55,7 @@ public class GStreamSet {
     }
 
     public boolean create(PStreamSet pss, Condition condition, Audio audio) {
-        /* check */
+        // check
         if (gstream != null || gspeech != null) {
             Misc.error("GStreaSet.create: not initialized().");
             return false;
@@ -72,17 +72,17 @@ public class GStreamSet {
 
         gspeech = new double[total_nsample];
 
-        /* copy generated parameter */
+        // copy generated parameter
         for (int i = 0; i < nstream; i++) {
             if (pss.is_msd(i)) {
-                //	System.err.printf("is_msd(%d):true\n", i);
+//                System.err.printf("is_msd(%d):true\n", i);
                 int msd_frame = 0;
                 for (int j = 0; j < total_frame; j++)
                     if (pss.get_msd_flag(i, j)) {
-                        //System.err.printf("msd_flag(%d,%d):true\n", i, j);
+//                        System.err.printf("msd_flag(%d,%d):true\n", i, j);
                         for (int k = 0; k < gstream[i].vector_length; k++) {
                             gstream[i].par[j][k] = pss.get_parameter(i, msd_frame, k);
-                            //System.err.printf("gstream[%d].par[%d][%d]:%5.2f\n", i, j, k, gstream[i].par[j][k]);
+//                            System.err.printf("gstream[%d].par[%d][%d]:%5.2f\n", i, j, k, gstream[i].par[j][k]);
                         }
                         msd_frame++;
                     } else
@@ -92,12 +92,12 @@ public class GStreamSet {
                 for (int j = 0; j < total_frame; j++)
                     for (int k = 0; k < gstream[i].vector_length; k++) {
                         gstream[i].par[j][k] = pss.get_parameter(i, j, k);
-                        //System.err.printf("gstream[%d].par[%d][%d]:%5.2f\n", i, j, k, gstream[i].par[j][k]);
+//                        System.err.printf("gstream[%d].par[%d][%d]:%5.2f\n", i, j, k, gstream[i].par[j][k]);
                     }
             }
         }
 
-        /* check */
+        // check
         if (nstream != 2 && nstream != 3) {
             Misc.error("GStreamSet.create: The number of streams should be 2 or 3.");
             clear();
@@ -112,16 +112,16 @@ public class GStreamSet {
             return false;
         }
 
-        /* synthesize speech waveform */
+        // synthesize speech waveform
         Vocoder v = new Vocoder();
         v.initialize(gstream[0].vector_length - 1, condition);
         int nlpf = 0;
         if (nstream >= 3)
             nlpf = gstream[2].vector_length;
-        //System.err.printf("total_frame:%d\n", total_frame);
+//        System.err.printf("total_frame:%d\n", total_frame);
 
         if (audio != null) {
-            //System.err.printf("audio_open!\n");
+//            System.err.printf("audio_open!\n");
             audio.open();
             if (!audio.isActive())
                 audio.start();

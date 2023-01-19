@@ -42,7 +42,6 @@ public class SStreamSet {
     int total_state;
     int total_frame;
 
-
     SStreamSet() {
         initialize();
     }

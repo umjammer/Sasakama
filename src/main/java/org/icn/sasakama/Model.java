@@ -219,6 +219,10 @@ public class Model {
         return true;
     }
 
+    /**
+     *
+     * @param pdf_index OUT
+     */
     public void get_index(int state_index, String string, int[] tree_index, int[] pdf_index) {
         Tree tr = null;
 

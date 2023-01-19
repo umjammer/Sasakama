@@ -46,6 +46,4 @@ public class Pattern {
         string = null;
         next = null;
     }
-
-
 }

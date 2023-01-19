@@ -66,14 +66,14 @@ public class Question {
         if (!hf.get_pattern_token(sb))
             return false;
         this.string = sb.toString();
-        //System.err.printf("string1:%s\n", this.string);
+//        System.err.printf("string1:%s\n", this.string);
 
         sb = new StringBuffer();
         if (!hf.get_pattern_token(sb)) {
             clear();
             return false;
         }
-        //System.err.printf("string2:%s\n", sb.toString());
+//        System.err.printf("string2:%s\n", sb.toString());
 
         Pattern last_pattern = null;
         if (sb.charAt(0) == '{') {
@@ -83,7 +83,7 @@ public class Question {
                     clear();
                     return false;
                 }
-                //System.err.printf("string3:%s\n", sb.toString());
+//                System.err.printf("string3:%s\n", sb.toString());
 
                 Pattern pattern = new Pattern();
                 if (head != null)
@@ -97,7 +97,7 @@ public class Question {
                     clear();
                     return false;
                 }
-                //System.err.printf("string4:%s\n", sb.toString());
+//                System.err.printf("string4:%s\n", sb.toString());
                 if (sb.charAt(0) == '}')
                     break;
 
@@ -121,7 +121,4 @@ public class Question {
                 return question;
         return null;
     }
-
-
-}	
-
+}

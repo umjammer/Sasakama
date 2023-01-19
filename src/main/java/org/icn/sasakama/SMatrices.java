@@ -41,7 +41,6 @@ public class SMatrices {
     double[][] wuw;
     double[] wum;
 
-
     SMatrices() {
     }
 
@@ -98,6 +97,4 @@ public class SMatrices {
             System.err.printf("wum[%d]:%5.2f\n", i, wum[i]);
         }
     }
-
-
 }

@@ -247,7 +247,7 @@ public class PStreamSet {
     }
 
     public boolean is_msd(int stream_index) {
-        return pstream[stream_index].msd_flag != null ? true : false;
+        return pstream[stream_index].msd_flag != null;
     }
 
     public void clear() {
